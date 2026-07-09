@@ -106,9 +106,21 @@ def main():
                 )
                 context = browser.new_context(
                     viewport={"width": 1280, "height": 800},
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    locale="en-US",
+                    timezone_id="America/New_York"
                 )
+                # Apply anti-webdriver scripts to hide automation signatures
+                context.add_init_script("delete navigator.__proto__.webdriver;")
+                context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined});")
+                
                 page = context.new_page()
+
+                # Open Instagram main page first to establish session headers/trust
+                print("Navigating to Instagram homepage...")
+                page.goto("https://www.instagram.com/", timeout=60000)
+                page.wait_for_load_state("networkidle")
+                time.sleep(3)
 
                 # Open Instagram login page
                 print("Navigating to Instagram Login...")
