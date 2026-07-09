@@ -1,0 +1,5 @@
+flask
+yt-dlp
+playwright
+pyotp
+gunicorn
