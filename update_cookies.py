@@ -92,153 +92,155 @@ def main():
     page = None
     try:
         with sync_playwright() as p:
-            # Launch chromium in headless mode
-            print("Launching headless browser...")
-            browser = p.chromium.launch(
-                headless=True,
-                args=[
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-blink-features=AutomationControlled'
-                ]
-            )
-            context = browser.new_context(
-                viewport={"width": 1280, "height": 800},
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            )
-            page = context.new_page()
-
-            # Open Instagram login page
-            print("Navigating to Instagram Login...")
-            page.goto("https://www.instagram.com/accounts/login/", timeout=60000)
-            
-            # Dismiss cookie consent dialog if it pops up
             try:
-                print("Checking for cookie consent popups...")
-                cookie_selectors = [
-                    'button:has-text("Allow essential and optional cookies")',
-                    'button:has-text("Allow all cookies")',
-                    'button:has-text("Decline optional cookies")',
-                    'button:has-text("Accept")',
-                    'button:has-text("Decline")'
-                ]
-                for selector in cookie_selectors:
-                    btn = page.locator(selector).first
-                    if btn.is_visible(timeout=2000):
-                        btn.click()
-                        print(f"Dismissed cookie popup using: {selector}")
-                        time.sleep(2)
-                        break
-            except Exception as ce:
-                print(f"No cookie consent popup detected or error: {ce}")
+                # Launch chromium in headless mode
+                print("Launching headless browser...")
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=[
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-blink-features=AutomationControlled'
+                    ]
+                )
+                context = browser.new_context(
+                    viewport={"width": 1280, "height": 800},
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                page = context.new_page()
 
-            # Wait for form inputs
-            print("Waiting for username input field...")
-            page.wait_for_selector('input[name="username"]', timeout=30000)
-
-            # Fill inputs
-            print("Typing credentials...")
-            page.type('input[name="username"]', username, delay=100)
-            page.type('input[name="password"]', password, delay=100)
-
-            # Submit form
-            print("Submitting login form...")
-            page.click('button[type="submit"]')
-
-            # Wait for response and check navigation/settlement
-            page.wait_for_load_state("networkidle")
-            time.sleep(5)
-
-            current_url = page.url
-            print(f"Current page URL: {current_url}")
-
-            # Check if 2FA code is requested
-            if "two_factor" in current_url or page.locator('input[name="oneTimePassword"]').is_visible():
-                print("Two-Factor Authentication (2FA) is required.")
-                if not totp_secret:
-                    err_msg = "Error: 2FA required by Instagram, but INSTAGRAM_2FA_SECRET is not configured."
-                    print(err_msg)
-                    save_status("error", err_msg)
-                    browser.close()
-                    sys.exit(1)
-
-                print("Generating TOTP code using 2FA secret...")
-                totp = pyotp.TOTP(totp_secret.replace(" ", ""))
-                code = totp.now()
-                print(f"Generated 2FA Code: {code}")
-
-                # Enter 2FA code
-                page.wait_for_selector('input[name="oneTimePassword"]')
-                page.type('input[name="oneTimePassword"]', code, delay=100)
+                # Open Instagram login page
+                print("Navigating to Instagram Login...")
+                page.goto("https://www.instagram.com/accounts/login/", timeout=60000)
                 
-                # Click Confirm
-                confirm_btn = page.locator('button:has-text("Confirm")')
-                if confirm_btn.is_visible():
-                    confirm_btn.click()
-                else:
-                    page.click('button[type="button"]')
+                # Dismiss cookie consent dialog if it pops up
+                try:
+                    print("Checking for cookie consent popups...")
+                    cookie_selectors = [
+                        'button:has-text("Allow essential and optional cookies")',
+                        'button:has-text("Allow all cookies")',
+                        'button:has-text("Decline optional cookies")',
+                        'button:has-text("Accept")',
+                        'button:has-text("Decline")'
+                    ]
+                    for selector in cookie_selectors:
+                        btn = page.locator(selector).first
+                        if btn.is_visible(timeout=2000):
+                            btn.click()
+                            print(f"Dismissed cookie popup using: {selector}")
+                            time.sleep(2)
+                            break
+                except Exception as ce:
+                    print(f"No cookie consent popup detected or error: {ce}")
 
+                # Wait for form inputs
+                print("Waiting for username input field...")
+                page.wait_for_selector('input[name="username"]', timeout=30000)
+
+                # Fill inputs
+                print("Typing credentials...")
+                page.type('input[name="username"]', username, delay=100)
+                page.type('input[name="password"]', password, delay=100)
+
+                # Submit form
+                print("Submitting login form...")
+                page.click('button[type="submit"]')
+
+                # Wait for response and check navigation/settlement
                 page.wait_for_load_state("networkidle")
                 time.sleep(5)
-                print(f"URL after 2FA confirmation: {page.url}")
 
-            # Check if sessionid cookie exists to confirm login
-            cookies = context.cookies()
-            session_cookie = [c for c in cookies if c['name'] == 'sessionid']
+                current_url = page.url
+                print(f"Current page URL: {current_url}")
 
-            if not session_cookie:
-                err_msg = "sessionid cookie not found. Login failed or blocked."
-                body_text = page.locator("body").inner_text()
-                if "Suspicious Login Attempt" in body_text or "Verify It's You" in body_text:
-                    err_msg = "Instagram flagged the login (Suspicious Login / Verify It's You)."
-                print(f"Error: {err_msg}")
-                status_data = save_status("error", err_msg)
+                # Check if 2FA code is requested
+                if "two_factor" in current_url or page.locator('input[name="oneTimePassword"]').is_visible():
+                    print("Two-Factor Authentication (2FA) is required.")
+                    if not totp_secret:
+                        err_msg = "Error: 2FA required by Instagram, but INSTAGRAM_2FA_SECRET is not configured."
+                        print(err_msg)
+                        save_status("error", err_msg)
+                        browser.close()
+                        sys.exit(1)
+
+                    print("Generating TOTP code using 2FA secret...")
+                    totp = pyotp.TOTP(totp_secret.replace(" ", ""))
+                    code = totp.now()
+                    print(f"Generated 2FA Code: {code}")
+
+                    # Enter 2FA code
+                    page.wait_for_selector('input[name="oneTimePassword"]')
+                    page.type('input[name="oneTimePassword"]', code, delay=100)
+                    
+                    # Click Confirm
+                    confirm_btn = page.locator('button:has-text("Confirm")')
+                    if confirm_btn.is_visible():
+                        confirm_btn.click()
+                    else:
+                        page.click('button[type="button"]')
+
+                    page.wait_for_load_state("networkidle")
+                    time.sleep(5)
+                    print(f"URL after 2FA confirmation: {page.url}")
+
+                # Check if sessionid cookie exists to confirm login
+                cookies = context.cookies()
+                session_cookie = [c for c in cookies if c['name'] == 'sessionid']
+
+                if not session_cookie:
+                    err_msg = "sessionid cookie not found. Login failed or blocked."
+                    body_text = page.locator("body").inner_text()
+                    if "Suspicious Login Attempt" in body_text or "Verify It's You" in body_text:
+                        err_msg = "Instagram flagged the login (Suspicious Login / Verify It's You)."
+                    print(f"Error: {err_msg}")
+                    status_data = save_status("error", err_msg)
+                    browser.close()
+                    sync_to_web_service(sync_url, sync_token, None, status_data)
+                    sys.exit(1)
+
+                print("Login successful! Constructing Netscape cookie format...")
+
+                # Format to Netscape Cookie File format
+                netscape_lines = [
+                    "# Netscape HTTP Cookie File",
+                    "# This file was automatically generated by SnapStream",
+                    "# Do not edit this file directly.",
+                    ""
+                ]
+
+                for cookie in cookies:
+                    domain = cookie['domain']
+                    include_subdomains = "TRUE" if domain.startswith('.') else "FALSE"
+                    path = cookie['path']
+                    secure = "TRUE" if cookie['secure'] else "FALSE"
+                    expires = str(int(cookie.get('expires', 0))) if 'expires' in cookie else "0"
+                    name = cookie['name']
+                    value = cookie['value']
+
+                    line = f"{domain}\t{include_subdomains}\t{path}\t{secure}\t{expires}\t{name}\t{value}"
+                    netscape_lines.append(line)
+
+                # Save to cookies.txt in the same directory
+                output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
+                with open(output_path, 'w', encoding='utf-8') as f:
+                    f.write("\n".join(netscape_lines) + "\n")
+
+                print(f"Success! Saved Netscape format cookies to: {output_path}")
+                status_data = save_status("success")
                 browser.close()
-                sync_to_web_service(sync_url, sync_token, None, status_data)
-                sys.exit(1)
-
-            print("Login successful! Constructing Netscape cookie format...")
-
-            # Format to Netscape Cookie File format
-            netscape_lines = [
-                "# Netscape HTTP Cookie File",
-                "# This file was automatically generated by SnapStream",
-                "# Do not edit this file directly.",
-                ""
-            ]
-
-            for cookie in cookies:
-                domain = cookie['domain']
-                include_subdomains = "TRUE" if domain.startswith('.') else "FALSE"
-                path = cookie['path']
-                secure = "TRUE" if cookie['secure'] else "FALSE"
-                expires = str(int(cookie.get('expires', 0))) if 'expires' in cookie else "0"
-                name = cookie['name']
-                value = cookie['value']
-
-                line = f"{domain}\t{include_subdomains}\t{path}\t{secure}\t{expires}\t{name}\t{value}"
-                netscape_lines.append(line)
-
-            # Save to cookies.txt in the same directory
-            output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write("\n".join(netscape_lines) + "\n")
-
-            print(f"Success! Saved Netscape format cookies to: {output_path}")
-            status_data = save_status("success")
-            browser.close()
-            sync_to_web_service(sync_url, sync_token, "\n".join(netscape_lines) + "\n", status_data)
+                sync_to_web_service(sync_url, sync_token, "\n".join(netscape_lines) + "\n", status_data)
+            except Exception as inner_e:
+                debug_info = ""
+                if page:
+                    try:
+                        debug_info = f"\nURL: {page.url}\nTitle: {page.title()}\nContent Snippet: {page.content()[:300]}"
+                    except Exception as deb_err:
+                        debug_info = f" (Failed to get page debug info: {deb_err})"
+                raise Exception(f"{inner_e}{debug_info}")
 
     except Exception as e:
-        debug_info = ""
-        if page:
-            try:
-                debug_info = f"\nURL: {page.url}\nTitle: {page.title()}\nContent Snippet: {page.content()[:300]}"
-            except Exception as deb_err:
-                debug_info = f" (Failed to get page debug info: {deb_err})"
-
-        err_msg = f"Fatal error: {e}{debug_info}"
+        err_msg = f"Fatal error: {e}"
         print(err_msg)
         status_data = save_status("error", err_msg)
         sync_to_web_service(sync_url, sync_token, None, status_data)
