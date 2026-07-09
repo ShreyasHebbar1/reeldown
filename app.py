@@ -10,8 +10,8 @@ import yt_dlp
 app = Flask(__name__, static_folder="static", template_folder="static")
 
 # Admin Credentials and Secret Key Settings
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "admin_password_2026"
+ADMIN_USERNAME = "terimaaki123"
+ADMIN_PASSWORD = "raju123*"
 app.secret_key = "reelflow_secure_admin_session_key_2026"
 
 try:
@@ -152,40 +152,7 @@ def track_visit(action_type):
         print(f"Error tracking visit: {e}")
 
 
-# Persistent history lock and file
-history_lock = threading.Lock()
-HISTORY_FILE = "history.json"
 
-def add_to_history(item):
-    with history_lock:
-        history = []
-        if os.path.exists(HISTORY_FILE):
-            try:
-                with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
-                    history = json.load(f)
-            except Exception:
-                history = []
-        
-        # Avoid duplicates in history
-        history = [x for x in history if x.get('url') != item.get('url')]
-        history.insert(0, item)
-        history = history[:50]  # Limit to last 50 downloads
-        
-        try:
-            with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
-                json.dump(history, f, indent=4, ensure_ascii=False)
-        except Exception as e:
-            print(f"Error saving history: {e}")
-
-def get_history():
-    with history_lock:
-        if os.path.exists(HISTORY_FILE):
-            try:
-                with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                return []
-        return []
 
 def apply_cookies_to_ytdl(ydl_opts, browser_cookies=None):
     cookies_path = os.path.join(os.getcwd(), "cookies.txt")
@@ -231,13 +198,24 @@ def get_info():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
+            # Extract video URL with progressive formats fallbacks
+            video_url = info.get('url')
+            if not video_url and info.get('formats'):
+                valid_formats = [f for f in info['formats'] if f.get('url')]
+                if valid_formats:
+                    progressive_formats = [f for f in valid_formats if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
+                    if progressive_formats:
+                        video_url = progressive_formats[-1]['url']
+                    else:
+                        video_url = valid_formats[-1]['url']
+            
             return jsonify({
                 "title": info.get('title', 'Instagram Reel'),
                 "thumbnail": info.get('thumbnail', ''),
                 "duration": format_duration(info.get('duration', 0)),
                 "uploader": info.get('uploader', 'Unknown Creator'),
                 "url": url,
-                "video_url": info.get('url')  # Direct video stream URL on CDN
+                "video_url": video_url  # Direct video stream URL on CDN
             })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -277,22 +255,7 @@ def download_stream():
     except Exception as e:
         return f"Error streaming video: {e}", 500
 
-@app.route('/api/history')
-def get_history_api():
-    return jsonify(get_history())
 
-@app.route('/api/history/add', methods=['POST'])
-def add_history_item():
-    data = request.json or {}
-    add_to_history({
-        "title": data.get('title', 'Instagram Reel'),
-        "thumbnail": data.get('thumbnail', ''),
-        "duration": data.get('duration', 'Unknown'),
-        "uploader": data.get('uploader', 'Unknown Creator'),
-        "url": data.get('url'),
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M")
-    })
-    return jsonify({"success": True})
 
 @app.route('/api/proxy-image')
 def proxy_image():
@@ -364,7 +327,7 @@ def admin_get_stats():
             pass
             
     # Include history for the admin panel log table
-    history_data = get_history()
+    history_data = []
     
     # Include cookie rotation status
     cookie_status = None
@@ -382,35 +345,7 @@ def admin_get_stats():
         "cookie_status": cookie_status
     })
 
-@app.route('/admin/api/history/delete', methods=['POST'])
-def admin_delete_history():
-    if not session.get('admin_logged_in'):
-        return jsonify({"error": "Unauthorized"}), 401
-        
-    data = request.json or {}
-    target_url = data.get('url')
-    if not target_url:
-        return jsonify({"error": "No URL provided"}), 400
-        
-    with history_lock:
-        history = []
-        if os.path.exists(HISTORY_FILE):
-            try:
-                with open(HISTORY_FILE, 'r', encoding='utf-8') as f:
-                    history = json.load(f)
-            except Exception:
-                pass
-                
-        # Filter out the target item
-        new_history = [x for x in history if x.get('url') != target_url]
-        
-        try:
-            with open(HISTORY_FILE, 'w', encoding='utf-8') as f:
-                json.dump(new_history, f, indent=4, ensure_ascii=False)
-        except Exception as e:
-            return jsonify({"error": f"Failed to save updated history: {e}"}), 500
-            
-    return jsonify({"success": True})
+
 
 @app.route('/admin/api/reset-stats', methods=['POST'])
 def admin_reset_stats():
@@ -466,6 +401,70 @@ def sync_cookies():
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/run-cookie-updater', methods=['GET', 'POST'])
+def run_cookie_updater_route():
+    # Verify token
+    token = request.args.get('token') or request.headers.get('Authorization')
+    expected_token = os.environ.get('COOKIE_SYNC_TOKEN')
+    if not expected_token and os.path.exists("secrets.json"):
+        try:
+            with open("secrets.json", "r", encoding="utf-8") as f:
+                expected_token = json.load(f).get("secret_key")
+        except:
+            pass
+            
+    if not expected_token or (token != expected_token and token != f"Bearer {expected_token}"):
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    # Run update_cookies main() in a background thread to avoid HTTP timeout
+    def run_async():
+        try:
+            from update_cookies import main as run_updater
+            run_updater()
+        except Exception as e:
+            print(f"Error running background updater: {e}")
+            
+    threading.Thread(target=run_async).start()
+    return jsonify({"success": True, "message": "Cookie updater started in the background."})
+
+@app.route('/admin/api/change-password', methods=['POST'])
+def admin_change_password():
+    if not session.get('admin_logged_in'):
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    data = request.json or {}
+    new_password = data.get('new_password')
+    new_username = data.get('new_username')
+    
+    if not new_password:
+        return jsonify({"error": "Missing new password"}), 400
+        
+    global ADMIN_PASSWORD, ADMIN_USERNAME
+    
+    # Load existing secrets.json if it exists
+    secrets_data = {}
+    if os.path.exists("secrets.json"):
+        try:
+            with open("secrets.json", "r", encoding="utf-8") as f:
+                secrets_data = json.load(f)
+        except:
+            pass
+            
+    # Update values
+    secrets_data["admin_password"] = new_password
+    ADMIN_PASSWORD = new_password
+    
+    if new_username:
+        secrets_data["admin_username"] = new_username
+        ADMIN_USERNAME = new_username
+        
+    try:
+        with open("secrets.json", "w", encoding="utf-8") as f:
+            json.dump(secrets_data, f, indent=4, ensure_ascii=False)
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": f"Failed to save secrets: {e}"}), 500
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
