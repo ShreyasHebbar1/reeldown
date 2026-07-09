@@ -89,11 +89,20 @@ def main():
 
     print(f"Starting Instagram login automation for user: {username}...")
 
+    page = None
     try:
         with sync_playwright() as p:
             # Launch chromium in headless mode
             print("Launching headless browser...")
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-blink-features=AutomationControlled'
+                ]
+            )
             context = browser.new_context(
                 viewport={"width": 1280, "height": 800},
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -104,6 +113,26 @@ def main():
             print("Navigating to Instagram Login...")
             page.goto("https://www.instagram.com/accounts/login/", timeout=60000)
             
+            # Dismiss cookie consent dialog if it pops up
+            try:
+                print("Checking for cookie consent popups...")
+                cookie_selectors = [
+                    'button:has-text("Allow essential and optional cookies")',
+                    'button:has-text("Allow all cookies")',
+                    'button:has-text("Decline optional cookies")',
+                    'button:has-text("Accept")',
+                    'button:has-text("Decline")'
+                ]
+                for selector in cookie_selectors:
+                    btn = page.locator(selector).first
+                    if btn.is_visible(timeout=2000):
+                        btn.click()
+                        print(f"Dismissed cookie popup using: {selector}")
+                        time.sleep(2)
+                        break
+            except Exception as ce:
+                print(f"No cookie consent popup detected or error: {ce}")
+
             # Wait for form inputs
             print("Waiting for username input field...")
             page.wait_for_selector('input[name="username"]', timeout=30000)
@@ -202,7 +231,14 @@ def main():
             sync_to_web_service(sync_url, sync_token, "\n".join(netscape_lines) + "\n", status_data)
 
     except Exception as e:
-        err_msg = f"Fatal error: {e}"
+        debug_info = ""
+        if page:
+            try:
+                debug_info = f"\nURL: {page.url}\nTitle: {page.title()}\nContent Snippet: {page.content()[:300]}"
+            except Exception as deb_err:
+                debug_info = f" (Failed to get page debug info: {deb_err})"
+
+        err_msg = f"Fatal error: {e}{debug_info}"
         print(err_msg)
         status_data = save_status("error", err_msg)
         sync_to_web_service(sync_url, sync_token, None, status_data)
