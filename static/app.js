@@ -23,6 +23,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentReelInfo = null;
 
+    // --- Helper: Local Storage History Management ---
+    function getLocalHistory() {
+        try {
+            const raw = localStorage.getItem('snapstream_download_history');
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            console.error('Error reading localStorage history:', e);
+            return [];
+        }
+    }
+
+    function addLocalHistoryItem(item) {
+        try {
+            let history = getLocalHistory();
+            history = history.filter(x => x.url !== item.url);
+            history.unshift(item);
+            history = history.slice(0, 50);
+            localStorage.setItem('snapstream_download_history', JSON.stringify(history));
+        } catch (e) {
+            console.error('Error writing localStorage history:', e);
+        }
+    }
+
     // --- Helper: Toast Messages ---
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
@@ -173,17 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             showToast('Download started in browser!', 'success');
 
-            // Log download to history
-            await fetch('/api/history/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: currentReelInfo.title,
-                    thumbnail: currentReelInfo.thumbnail,
-                    duration: currentReelInfo.duration,
-                    uploader: currentReelInfo.uploader,
-                    url: currentReelInfo.url
-                })
+            // Log download to local storage history
+            addLocalHistoryItem({
+                title: currentReelInfo.title,
+                thumbnail: currentReelInfo.thumbnail,
+                duration: currentReelInfo.duration,
+                uploader: currentReelInfo.uploader,
+                url: currentReelInfo.url,
+                date: new Date().toISOString().slice(0, 16).replace('T', ' ')
             });
 
             // Reset input after small timeout
@@ -200,62 +220,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Load History List ---
-    async function loadHistory() {
-        try {
-            const response = await fetch('/api/history');
-            const history = await response.json();
-            
-            historyCount.textContent = history.length;
-            
-            if (history.length === 0) {
-                historyList.innerHTML = '';
-                historyList.appendChild(historyEmpty);
-                return;
-            }
-
-            // Clear empty layout
+    function loadHistory() {
+        const history = getLocalHistory();
+        
+        historyCount.textContent = history.length;
+        
+        if (history.length === 0) {
             historyList.innerHTML = '';
+            historyList.appendChild(historyEmpty);
+            return;
+        }
+
+        // Clear empty layout
+        historyList.innerHTML = '';
+        
+        history.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'history-item';
             
-            history.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'history-item';
-                
-                const thumbUrl = `/api/proxy-image?url=${encodeURIComponent(item.thumbnail)}`;
-                
-                itemDiv.innerHTML = `
-                    <div class="history-thumb">
-                        <img src="${thumbUrl}" alt="Thumbnail">
-                        <span class="duration-tag">${item.duration}</span>
+            const thumbUrl = `/api/proxy-image?url=${encodeURIComponent(item.thumbnail)}`;
+            
+            itemDiv.innerHTML = `
+                <div class="history-thumb">
+                    <img src="${thumbUrl}" alt="Thumbnail">
+                    <span class="duration-tag">${item.duration}</span>
+                </div>
+                <div class="history-info">
+                    <div class="history-title-row">
+                        <h4 class="history-title" title="${item.title}">${item.title}</h4>
+                        <span class="history-meta">By @${item.uploader} • ${item.date}</span>
                     </div>
-                    <div class="history-info">
-                        <div class="history-title-row">
-                            <h4 class="history-title" title="${item.title}">${item.title}</h4>
-                            <span class="history-meta">By @${item.uploader} • ${item.date}</span>
-                        </div>
-                        <div class="history-actions">
-                            <button type="button" class="btn secondary-btn load-btn" data-url="${item.url}">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                                </svg>
-                                <span>Load Reel</span>
-                            </button>
-                        </div>
+                    <div class="history-actions">
+                        <button type="button" class="btn secondary-btn load-btn" data-url="${item.url}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                            </svg>
+                            <span>Load Reel</span>
+                        </button>
                     </div>
-                `;
-                
-                // Event listener on "Load Reel"
-                itemDiv.querySelector('.load-btn').addEventListener('click', (e) => {
-                    const url = e.currentTarget.getAttribute('data-url');
-                    reelUrlInput.value = url;
-                    fetchReelMetadata(url);
-                });
-                
-                historyList.appendChild(itemDiv);
+                </div>
+            `;
+            
+            // Event listener on "Load Reel"
+            itemDiv.querySelector('.load-btn').addEventListener('click', (e) => {
+                const url = e.currentTarget.getAttribute('data-url');
+                reelUrlInput.value = url;
+                fetchReelMetadata(url);
             });
             
-        } catch (err) {
-            console.error('Failed to load history list:', err);
-        }
+            historyList.appendChild(itemDiv);
+        });
     }
 
     // --- Accordion component (Privacy Policy) ---

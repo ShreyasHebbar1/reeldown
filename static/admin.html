@@ -569,6 +569,13 @@
                     </svg>
                     <span>View Site</span>
                 </a>
+                <button id="btn-open-password" class="btn secondary-btn" style="padding: 8px 16px; font-size: 0.9rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>Change Credentials</span>
+                </button>
                 <button id="btn-open-reset" class="btn text-btn" style="color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.15); padding: 8px 16px; font-size: 0.9rem;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
                         <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/>
@@ -712,6 +719,33 @@
                 <button id="btn-confirm-cancel" class="btn secondary-btn" style="padding: 10px 20px;">Cancel</button>
                 <button id="btn-confirm-reset" class="btn primary-btn" style="background: var(--accent-rose); border-color: rgba(244, 63, 94, 0.2); padding: 10px 20px;">Yes, Reset</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal Overlay -->
+    <div id="password-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: left; border-color: rgba(139, 92, 246, 0.25); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.08);">
+            <div class="modal-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border-color: rgba(139, 92, 246, 0.2);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+            </div>
+            <h4 class="modal-title" style="text-align: center; margin-bottom: 20px;">Change Credentials</h4>
+            <form id="password-change-form">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="new-username" style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">New Username (Optional)</label>
+                    <input type="text" id="new-username" class="form-control" placeholder="Enter new username" style="width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+                </div>
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label for="new-password" style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">New Password</label>
+                    <input type="password" id="new-password" class="form-control" placeholder="Enter new password" required style="width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+                </div>
+                <div class="modal-buttons" style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" id="btn-password-cancel" class="btn secondary-btn" style="padding: 10px 20px;">Cancel</button>
+                    <button type="submit" class="btn primary-btn" style="padding: 10px 20px;">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1195,6 +1229,55 @@
                     showToast(err.message, 'error');
                 }
             });
+
+            // -------------------- CHANGE PASSWORD CONTROLLER --------------------
+            const passwordModal = document.getElementById('password-modal');
+            const openPasswordBtn = document.getElementById('btn-open-password');
+            const cancelPasswordBtn = document.getElementById('btn-password-cancel');
+            const passwordForm = document.getElementById('password-change-form');
+
+            if (openPasswordBtn) {
+                openPasswordBtn.addEventListener('click', () => {
+                    document.getElementById('new-username').value = '';
+                    document.getElementById('new-password').value = '';
+                    passwordModal.classList.add('active');
+                });
+            }
+
+            if (cancelPasswordBtn) {
+                cancelPasswordBtn.addEventListener('click', () => {
+                    passwordModal.classList.remove('active');
+                });
+            }
+
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const newUsername = document.getElementById('new-username').value.trim();
+                    const newPassword = document.getElementById('new-password').value;
+
+                    try {
+                        const response = await fetch('/admin/api/change-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                new_username: newUsername || null,
+                                new_password: newPassword
+                            })
+                        });
+
+                        const resData = await response.json();
+                        if (response.ok && resData.success) {
+                            showToast('Credentials updated successfully!', 'success');
+                            passwordModal.classList.remove('active');
+                        } else {
+                            throw new Error(resData.error || 'Failed to update credentials');
+                        }
+                    } catch (err) {
+                        showToast(err.message, 'error');
+                    }
+                });
+            }
 
             loadDashboardData();
         });
