@@ -150,8 +150,43 @@ def track_visit(action_type):
                 print(f"Error saving stats: {e}")
     except Exception as e:
         print(f"Error tracking visit: {e}")
-
-
+def get_cookies_expiry_date():
+    cookies_path = os.path.join(os.getcwd(), "cookies.txt")
+    if not os.path.exists(cookies_path):
+        return None
+        
+    try:
+        sessionid_expiry = None
+        other_expiry = []
+        
+        with open(cookies_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                parts = line.split('\t')
+                if len(parts) >= 7:
+                    name = parts[5]
+                    try:
+                        exp = int(parts[4])
+                    except ValueError:
+                        continue
+                        
+                    if exp > 0:
+                        if name == 'sessionid':
+                            sessionid_expiry = exp
+                        else:
+                            other_expiry.append(exp)
+                            
+        # Use sessionid expiry if found, else fallback to max of other expiry dates
+        expiry_epoch = sessionid_expiry or (max(other_expiry) if other_expiry else None)
+        if expiry_epoch:
+            dt = datetime.fromtimestamp(expiry_epoch)
+            return dt.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception as e:
+        print(f"Error parsing cookies expiry: {e}")
+        
+    return None
 
 
 def apply_cookies_to_ytdl(ydl_opts, browser_cookies=None):
@@ -339,6 +374,13 @@ def admin_get_stats():
         except Exception:
             pass
             
+    expiry_date = get_cookies_expiry_date()
+    if not cookie_status:
+        cookie_status = {
+            "status": "success" if os.path.exists("cookies.txt") and os.path.getsize("cookies.txt") > 0 else "unknown"
+        }
+    cookie_status["expires_at"] = expiry_date
+            
     return jsonify({
         "stats": stats_data,
         "history": history_data,
@@ -465,6 +507,38 @@ def admin_change_password():
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": f"Failed to save secrets: {e}"}), 500
+
+@app.route('/admin/api/upload-cookies', methods=['POST'])
+def admin_upload_cookies():
+    if not session.get('admin_logged_in'):
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    data = request.json or {}
+    cookies_text = data.get('cookies_text')
+    
+    if not cookies_text:
+        return jsonify({"error": "No cookie content provided"}), 400
+        
+    try:
+        # Save to cookies.txt in workspace root
+        cookies_path = os.path.join(os.getcwd(), "cookies.txt")
+        with open(cookies_path, 'w', encoding='utf-8') as f:
+            f.write(cookies_text)
+            
+        # Update cookie_status.json
+        status_path = os.path.join(os.getcwd(), 'cookie_status.json')
+        status_data = {
+            "status": "success",
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "last_success_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "error_message": None
+        }
+        with open(status_path, 'w', encoding='utf-8') as f:
+            json.dump(status_data, f, indent=4, ensure_ascii=False)
+            
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": f"Failed to save cookies: {e}"}), 500
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
