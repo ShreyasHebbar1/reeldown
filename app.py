@@ -9,14 +9,24 @@ import yt_dlp
 
 app = Flask(__name__, static_folder="static", template_folder="static")
 
+# Configure Data Directory (important for persistent volumes on deployment platforms like Render)
+DATA_DIR = os.environ.get("DATA_DIR", os.getcwd())
+if DATA_DIR != os.getcwd():
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+COOKIES_FILE = os.path.join(DATA_DIR, "cookies.txt")
+STATS_FILE = os.path.join(DATA_DIR, "stats.json")
+COOKIE_STATUS_FILE = os.path.join(DATA_DIR, "cookie_status.json")
+SECRETS_FILE = os.path.join(DATA_DIR, "secrets.json")
+
 # Admin Credentials and Secret Key Settings
-ADMIN_USERNAME = "terimaaki123"
-ADMIN_PASSWORD = "raju123*"
-app.secret_key = "reelflow_secure_admin_session_key_2026"
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "terimaaki123")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "raju123*")
+app.secret_key = os.environ.get("SECRET_KEY", "reelflow_secure_admin_session_key_2026")
 
 try:
-    if os.path.exists("secrets.json"):
-        with open("secrets.json", "r", encoding="utf-8") as f:
+    if os.path.exists(SECRETS_FILE):
+        with open(SECRETS_FILE, "r", encoding="utf-8") as f:
             secrets_data = json.load(f)
             ADMIN_USERNAME = secrets_data.get("admin_username", ADMIN_USERNAME)
             ADMIN_PASSWORD = secrets_data.get("admin_password", ADMIN_PASSWORD)
@@ -27,7 +37,7 @@ except Exception as e:
 
 # Stats telemetry lock and file
 stats_lock = threading.Lock()
-STATS_FILE = "stats.json"
+
 
 def parse_user_agent(ua_string):
     if not ua_string:
@@ -142,24 +152,29 @@ def track_visit(action_type):
             if action_type == 'page_view':
                 stats["browsers"][browser] = stats["browsers"].get(browser, 0) + 1
                 stats["platforms"][platform] = stats["platforms"].get(platform, 0) + 1
-                
-            try:
-                with open(STATS_FILE, 'w', encoding='utf-8') as f:
-                    json.dump(stats, f, indent=4, ensure_ascii=False)
-            except Exception as e:
-                print(f"Error saving stats: {e}")
+            
+            # Save stats
+            with open(STATS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(stats, f)
     except Exception as e:
-        print(f"Error tracking visit: {e}")
+        print(f"Tracking error: {e}")
+
+def format_duration(seconds):
+    if not seconds:
+        return "Unknown"
+    mins = int(seconds) // 60
+    secs = int(seconds) % 60
+    return f"{mins}:{secs:02d}"
+
 def get_cookies_expiry_date():
-    cookies_path = os.path.join(os.getcwd(), "cookies.txt")
-    if not os.path.exists(cookies_path):
+    if not os.path.exists(COOKIES_FILE):
         return None
         
     try:
         sessionid_expiry = None
         other_expiry = []
         
-        with open(cookies_path, 'r', encoding='utf-8') as f:
+        with open(COOKIES_FILE, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith('#'):
@@ -188,27 +203,60 @@ def get_cookies_expiry_date():
         
     return None
 
-
 def apply_cookies_to_ytdl(ydl_opts, browser_cookies=None):
-    cookies_path = os.path.join(os.getcwd(), "cookies.txt")
-    if os.path.exists(cookies_path) and os.path.getsize(cookies_path) > 0:
-        ydl_opts['cookiefile'] = cookies_path
+    if os.path.exists(COOKIES_FILE) and os.path.getsize(COOKIES_FILE) > 0:
+        ydl_opts['cookiefile'] = COOKIES_FILE
         print("Using server-side cookies.txt configuration")
     elif browser_cookies and browser_cookies != 'none':
         ydl_opts['cookiesfrombrowser'] = (browser_cookies,)
         print(f"Using cookies from browser: {browser_cookies}")
 
-def format_duration(seconds):
-    if not seconds:
-        return "Unknown"
-    mins = int(seconds) // 60
-    secs = int(seconds) % 60
-    return f"{mins}:{secs:02d}"
-
 @app.route('/')
 def index():
     track_visit('page_view')
     return render_template("index.html")
+
+@app.route('/instagram-reels-downloader')
+def instagram_reels_downloader():
+    return redirect('/', code=301)
+
+@app.route('/reels-downloader')
+def reels_downloader():
+    return redirect('/', code=301)
+
+@app.route('/instagram-video-downloader')
+def instagram_video_downloader():
+    return redirect('/', code=301)
+
+@app.route('/download-instagram-reels')
+def download_instagram_reels():
+    track_visit('page_view')
+    return render_template("download-instagram-reels.html")
+
+@app.route('/instagram-reels-downloader-iphone')
+def instagram_reels_downloader_iphone():
+    track_visit('page_view')
+    return render_template("instagram-reels-downloader-iphone.html")
+
+@app.route('/instagram-reels-downloader-android')
+def instagram_reels_downloader_android():
+    track_visit('page_view')
+    return render_template("instagram-reels-downloader-android.html")
+
+@app.route('/privacy')
+def privacy():
+    track_visit('page_view')
+    return render_template("privacy.html")
+
+@app.route('/terms')
+def terms():
+    track_visit('page_view')
+    return render_template("terms.html")
+
+@app.route('/contact')
+def contact():
+    track_visit('page_view')
+    return render_template("contact.html")
 
 @app.route('/api/info', methods=['POST'])
 def get_info():
@@ -233,6 +281,18 @@ def get_info():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
+            # Handle playlist/carousel entries if returned
+            if 'entries' in info:
+                valid_entries = [e for e in info['entries'] if e]
+                if valid_entries:
+                    # Find the first entry that contains video format URLs
+                    video_entry = None
+                    for entry in valid_entries:
+                        if entry.get('url') or entry.get('formats'):
+                            video_entry = entry
+                            break
+                    info = video_entry or valid_entries[0]
+            
             # Extract video URL with progressive formats fallbacks
             video_url = info.get('url')
             if not video_url and info.get('formats'):
@@ -244,8 +304,11 @@ def get_info():
                     else:
                         video_url = valid_formats[-1]['url']
             
+            if not video_url:
+                return jsonify({"error": "No downloadable video found in this post. Make sure it contains a video, not just photos."}), 400
+
             return jsonify({
-                "title": info.get('title', 'Instagram Reel'),
+                "title": info.get('title', 'Instagram Video'),
                 "thumbnail": info.get('thumbnail', ''),
                 "duration": format_duration(info.get('duration', 0)),
                 "uploader": info.get('uploader', 'Unknown Creator'),
@@ -340,6 +403,43 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('admin_panel'))
 
+def verify_instagram_cookies():
+    cookies_path = COOKIES_FILE
+    if not os.path.exists(cookies_path) or os.path.getsize(cookies_path) == 0:
+        return False, "No cookies file found or file is empty."
+        
+    try:
+        cookie_items = []
+        with open(cookies_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.startswith('#') or not line.strip():
+                    continue
+                parts = line.strip().split('\t')
+                if len(parts) >= 7:
+                    cookie_items.append(f"{parts[5]}={parts[6]}")
+                    
+        if not cookie_items:
+            return False, "No valid Netscape format cookies parsed."
+            
+        cookie_header = "; ".join(cookie_items)
+        
+        req = urllib.request.Request(
+            "https://www.instagram.com/accounts/edit/",
+            headers={
+                "Cookie": cookie_header,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+        )
+        
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            final_url = resp.geturl()
+            if "accounts/login" in final_url:
+                return False, "Expired or invalid (Instagram redirected to login)."
+            else:
+                return True, "Active and valid."
+    except Exception as e:
+        return False, f"Verification failed: {str(e)}"
+
 @app.route('/admin/api/stats')
 def admin_get_stats():
     if not session.get('admin_logged_in'):
@@ -364,20 +464,53 @@ def admin_get_stats():
     # Include history for the admin panel log table
     history_data = []
     
-    # Include cookie rotation status
+    # Check if we need to perform the daily auto validity check (if last check was > 24 hours ago)
     cookie_status = None
-    status_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookie_status.json')
+    status_path = COOKIE_STATUS_FILE
+    need_validation = True
+    
     if os.path.exists(status_path):
         try:
             with open(status_path, 'r', encoding='utf-8') as f:
                 cookie_status = json.load(f)
+                last_updated_str = cookie_status.get("last_updated") or cookie_status.get("last_attempt_time")
+                if last_updated_str:
+                    last_updated = datetime.strptime(last_updated_str, "%Y-%m-%d %H:%M:%S")
+                    if (datetime.now() - last_updated).total_seconds() < 86400:
+                        need_validation = False
         except Exception:
             pass
+            
+    if need_validation:
+        def bg_check():
+            valid, message = verify_instagram_cookies()
+            status_data = {
+                "status": "success" if valid else "error",
+                "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "last_success_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S") if valid else None,
+                "error_message": None if valid else message
+            }
+            if not valid and os.path.exists(status_path):
+                try:
+                    with open(status_path, 'r', encoding='utf-8') as f:
+                        old = json.load(f)
+                        status_data["last_success_time"] = old.get("last_success_time")
+                except:
+                    pass
+            try:
+                with open(status_path, 'w', encoding='utf-8') as f:
+                    json.dump(status_data, f, indent=4, ensure_ascii=False)
+            except:
+                pass
+        threading.Thread(target=bg_check).start()
+        
+        if not cookie_status:
+            cookie_status = {"status": "checking"}
             
     expiry_date = get_cookies_expiry_date()
     if not cookie_status:
         cookie_status = {
-            "status": "success" if os.path.exists("cookies.txt") and os.path.getsize("cookies.txt") > 0 else "unknown"
+            "status": "success" if os.path.exists(COOKIES_FILE) and os.path.getsize(COOKIES_FILE) > 0 else "unknown"
         }
     cookie_status["expires_at"] = expiry_date
             
@@ -386,8 +519,6 @@ def admin_get_stats():
         "history": history_data,
         "cookie_status": cookie_status
     })
-
-
 
 @app.route('/admin/api/reset-stats', methods=['POST'])
 def admin_reset_stats():
@@ -412,63 +543,39 @@ def admin_reset_stats():
             
     return jsonify({"success": True})
 
-@app.route('/api/cookies/sync', methods=['POST'])
-def sync_cookies():
-    token = request.headers.get('Authorization')
-    expected_token = os.environ.get('COOKIE_SYNC_TOKEN')
-    if not expected_token and os.path.exists("secrets.json"):
-        try:
-            with open("secrets.json", "r", encoding="utf-8") as f:
-                expected_token = json.load(f).get("secret_key")
-        except:
-            pass
-            
-    if not expected_token or token != f"Bearer {expected_token}":
+@app.route('/admin/api/check-cookies', methods=['POST'])
+def admin_check_cookies():
+    if not session.get('admin_logged_in'):
         return jsonify({"error": "Unauthorized"}), 401
         
-    data = request.json or {}
-    cookies_content = data.get('cookies_content')
-    status_content = data.get('status_content')
+    valid, message = verify_instagram_cookies()
     
-    if not cookies_content and not status_content:
-        return jsonify({"error": "Missing content to sync"}), 400
-        
-    try:
-        if cookies_content:
-            with open('cookies.txt', 'w', encoding='utf-8') as f:
-                f.write(cookies_content)
-        if status_content:
-            with open('cookie_status.json', 'w', encoding='utf-8') as f:
-                json.dump(status_content, f, indent=4, ensure_ascii=False)
-        return jsonify({"success": True})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/api/admin/run-cookie-updater', methods=['GET', 'POST'])
-def run_cookie_updater_route():
-    # Verify token
-    token = request.args.get('token') or request.headers.get('Authorization')
-    expected_token = os.environ.get('COOKIE_SYNC_TOKEN')
-    if not expected_token and os.path.exists("secrets.json"):
+    status_path = COOKIE_STATUS_FILE
+    status_data = {
+        "status": "success" if valid else "error",
+        "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "last_success_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S") if valid else None,
+        "error_message": None if valid else message
+    }
+    
+    if not valid and os.path.exists(status_path):
         try:
-            with open("secrets.json", "r", encoding="utf-8") as f:
-                expected_token = json.load(f).get("secret_key")
+            with open(status_path, 'r', encoding='utf-8') as f:
+                old = json.load(f)
+                status_data["last_success_time"] = old.get("last_success_time")
         except:
             pass
             
-    if not expected_token or (token != expected_token and token != f"Bearer {expected_token}"):
-        return jsonify({"error": "Unauthorized"}), 401
+    try:
+        with open(status_path, 'w', encoding='utf-8') as f:
+            json.dump(status_data, f, indent=4, ensure_ascii=False)
+    except:
+        pass
         
-    # Run update_cookies main() in a background thread to avoid HTTP timeout
-    def run_async():
-        try:
-            from update_cookies import main as run_updater
-            run_updater()
-        except Exception as e:
-            print(f"Error running background updater: {e}")
-            
-    threading.Thread(target=run_async).start()
-    return jsonify({"success": True, "message": "Cookie updater started in the background."})
+    if valid:
+        return jsonify({"success": True, "message": message})
+    else:
+        return jsonify({"success": False, "error": message})
 
 @app.route('/admin/api/change-password', methods=['POST'])
 def admin_change_password():
@@ -486,9 +593,9 @@ def admin_change_password():
     
     # Load existing secrets.json if it exists
     secrets_data = {}
-    if os.path.exists("secrets.json"):
+    if os.path.exists(SECRETS_FILE):
         try:
-            with open("secrets.json", "r", encoding="utf-8") as f:
+            with open(SECRETS_FILE, "r", encoding="utf-8") as f:
                 secrets_data = json.load(f)
         except:
             pass
@@ -502,7 +609,7 @@ def admin_change_password():
         ADMIN_USERNAME = new_username
         
     try:
-        with open("secrets.json", "w", encoding="utf-8") as f:
+        with open(SECRETS_FILE, "w", encoding="utf-8") as f:
             json.dump(secrets_data, f, indent=4, ensure_ascii=False)
         return jsonify({"success": True})
     except Exception as e:
@@ -521,12 +628,12 @@ def admin_upload_cookies():
         
     try:
         # Save to cookies.txt in workspace root
-        cookies_path = os.path.join(os.getcwd(), "cookies.txt")
+        cookies_path = COOKIES_FILE
         with open(cookies_path, 'w', encoding='utf-8') as f:
             f.write(cookies_text)
             
         # Update cookie_status.json
-        status_path = os.path.join(os.getcwd(), 'cookie_status.json')
+        status_path = COOKIE_STATUS_FILE
         status_data = {
             "status": "success",
             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
