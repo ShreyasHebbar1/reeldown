@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapStream Admin - Analytics Dashboard</title>
+    <title>VidsDownloader Admin - Analytics Dashboard</title>
     <link rel="shortcut icon" href="/static/icon1.png" type="image/png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,11 +18,22 @@
     <link rel="stylesheet" href="/static/style.css">
     
     <style>
-        /* Dashboard-specific overrides and unique styling */
         :root {
-            --accent-cyan: #06b6d4;
+            --accent-cyan: #0ea5e9;
             --accent-orange: #f97316;
-            --card-border-glow: rgba(139, 92, 246, 0.15);
+            --card-border-glow: rgba(225, 48, 108, 0.08);
+            --bg-dark: #f4f6f9;
+            --bg-card: #ffffff;
+            --border-color: #e4e4e4;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --text-muted: #888888;
+        }
+        
+        body {
+            background-color: #f4f6f9 !important;
+            color: #1a1a1a !important;
+            font-family: 'Poppins', sans-serif !important;
         }
         
         .admin-wrapper {
@@ -33,24 +44,21 @@
             z-index: 10;
         }
         
-        /* Glassmorphism containers */
         .glass-card {
-            background: rgba(15, 15, 27, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.3s ease;
+            color: #1a1a1a !important;
         }
         
         .glass-card:hover {
-            border-color: rgba(139, 92, 246, 0.25);
-            box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.1);
+            border-color: #e1306c !important;
+            box-shadow: 0 10px 30px rgba(225, 48, 108, 0.08) !important;
         }
         
-        /* Stats grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -65,14 +73,15 @@
             flex-direction: column;
             padding: 24px;
             border-radius: 16px;
-            background: rgba(20, 20, 35, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
         
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(139, 92, 246, 0.3);
+            border-color: #e1306c !important;
         }
         
         .stat-card::before {
@@ -85,15 +94,15 @@
             background: var(--gradient-primary);
         }
         
-        .stat-card.blue::before { background: linear-gradient(180deg, #3b82f6, #06b6d4); }
-        .stat-card.pink::before { background: linear-gradient(180deg, #ec4899, #f43f5e); }
+        .stat-card.blue::before { background: linear-gradient(180deg, #3b82f6, #0ea5e9); }
+        .stat-card.pink::before { background: linear-gradient(180deg, #ec4899, #e1306c); }
         .stat-card.green::before { background: linear-gradient(180deg, #10b981, #059669); }
         .stat-card.purple::before { background: linear-gradient(180deg, #8b5cf6, #d946ef); }
         
         .stat-label {
             font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 500;
+            color: #888888 !important;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 8px;
@@ -102,17 +111,16 @@
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #1a1a1a !important;
             line-height: 1;
             margin-bottom: 6px;
         }
         
         .stat-desc {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: #555555 !important;
         }
         
-        /* Charts grid */
         .charts-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -131,7 +139,6 @@
             position: relative;
         }
         
-        /* Logs table section */
         .table-header-actions {
             display: flex;
             justify-content: space-between;
@@ -149,21 +156,21 @@
         
         .search-input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
             border-radius: 12px;
             padding: 12px 16px 12px 42px;
-            color: var(--text-primary);
-            font-family: var(--font-sans);
+            color: #1a1a1a !important;
+            font-family: 'Poppins', sans-serif;
             font-size: 0.9rem;
             transition: all 0.3s ease;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: var(--accent-purple);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+            border-color: #e1306c !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 15px rgba(225, 48, 108, 0.15) !important;
         }
         
         .search-icon {
@@ -173,7 +180,7 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            color: var(--text-muted);
+            color: #888888 !important;
             pointer-events: none;
         }
         
@@ -181,8 +188,8 @@
             width: 100%;
             overflow-x: auto;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(10, 10, 20, 0.4);
+            border: 1px solid #e4e4e4 !important;
+            background: #ffffff !important;
         }
         
         .logs-table {
@@ -193,11 +200,11 @@
         }
         
         .logs-table th {
-            background: rgba(20, 20, 35, 0.8);
+            background: #f8fafc !important;
             padding: 14px 18px;
             font-weight: 600;
-            color: var(--text-muted);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #555555 !important;
+            border-bottom: 1px solid #e4e4e4 !important;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.05em;
@@ -205,14 +212,14 @@
         
         .logs-table td {
             padding: 14px 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            color: var(--text-secondary);
+            border-bottom: 1px solid #f1f5f9 !important;
+            color: #4a5568 !important;
             vertical-align: middle;
         }
         
         .logs-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-            color: var(--text-primary);
+            background: #f8fafc !important;
+            color: #1a1a1a !important;
         }
         
         .logs-table tr:last-child td {
@@ -224,17 +231,17 @@
             height: 44px;
             object-fit: cover;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #e4e4e4 !important;
         }
         
         .creator-handle {
-            background: rgba(139, 92, 246, 0.15);
-            color: #c084fc;
+            background: rgba(225, 48, 108, 0.08) !important;
+            color: #e1306c !important;
             padding: 3px 8px;
             border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 500;
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(225, 48, 108, 0.15) !important;
             display: inline-block;
         }
         
@@ -245,7 +252,7 @@
         .btn-delete {
             background: transparent;
             border: none;
-            color: var(--accent-rose);
+            color: #f43f5e !important;
             cursor: pointer;
             padding: 6px;
             border-radius: 8px;
@@ -256,8 +263,8 @@
         }
         
         .btn-delete:hover {
-            background: rgba(244, 63, 94, 0.15);
-            color: #ff4d6d;
+            background: rgba(244, 63, 94, 0.15) !important;
+            color: #ff4d6d !important;
         }
         
         .btn-delete svg {
@@ -268,17 +275,16 @@
         .table-empty {
             text-align: center;
             padding: 40px !important;
-            color: var(--text-muted);
+            color: #888888 !important;
         }
         
         .table-empty svg {
             width: 48px;
             height: 48px;
-            color: rgba(255, 255, 255, 0.1);
+            color: #e4e4e4 !important;
             margin-bottom: 12px;
         }
         
-        /* Pagination */
         .pagination {
             display: flex;
             justify-content: space-between;
@@ -289,7 +295,7 @@
         
         .pagination-info {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #888888 !important;
         }
         
         .pagination-controls {
@@ -298,20 +304,20 @@
         }
         
         .btn-pag {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
+            color: #1a1a1a !important;
             padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.85rem;
-            font-family: var(--font-sans);
+            font-family: 'Poppins', sans-serif;
             transition: all 0.2s ease;
         }
         
         .btn-pag:hover:not(:disabled) {
-            background: rgba(139, 92, 246, 0.2);
-            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(225, 48, 108, 0.08) !important;
+            border-color: #e1306c !important;
         }
         
         .btn-pag:disabled {
@@ -319,7 +325,6 @@
             cursor: not-allowed;
         }
         
-        /* Login Form Centering */
         .login-container {
             display: flex;
             justify-content: center;
@@ -341,28 +346,28 @@
             display: block;
             font-size: 0.85rem;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: #555555 !important;
             margin-bottom: 8px;
             text-align: left;
         }
         
         .form-control {
             width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
             border-radius: 12px;
             padding: 12px 16px;
-            color: var(--text-primary);
-            font-family: var(--font-sans);
+            color: #1a1a1a !important;
+            font-family: 'Poppins', sans-serif;
             font-size: 0.95rem;
             transition: all 0.3s ease;
         }
         
         .form-control:focus {
             outline: none;
-            border-color: var(--accent-purple);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+            border-color: #e1306c !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 15px rgba(225, 48, 108, 0.15) !important;
         }
         
         .login-header {
@@ -381,16 +386,15 @@
         
         .login-header p {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: #888888 !important;
         }
         
-        /* Admin Header Actions */
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 35px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #e4e4e4 !important;
             padding-bottom: 20px;
         }
         
@@ -398,7 +402,7 @@
             font-size: 1.6rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            color: var(--text-primary);
+            color: #1a1a1a !important;
         }
         
         .admin-logo span {
@@ -412,14 +416,13 @@
             gap: 12px;
         }
         
-        /* Modal for Confirmation */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.5) !important;
             backdrop-filter: blur(8px);
             z-index: 1000;
             display: flex;
@@ -436,8 +439,8 @@
         }
         
         .modal-content {
-            background: #11111f;
-            border: 1px solid rgba(255, 63, 94, 0.2);
+            background: #ffffff !important;
+            border: 1px solid #e4e4e4 !important;
             border-radius: 16px;
             padding: 30px;
             max-width: 440px;
@@ -445,7 +448,7 @@
             text-align: center;
             transform: scale(0.9);
             transition: all 0.3s ease;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(244, 63, 94, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
         }
         
         .modal-overlay.active .modal-content {
@@ -456,7 +459,7 @@
             width: 56px;
             height: 56px;
             background: rgba(244, 63, 94, 0.1);
-            color: var(--accent-rose);
+            color: #f43f5e !important;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -474,12 +477,12 @@
             font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 12px;
-            color: var(--text-primary);
+            color: #1a1a1a !important;
         }
         
         .modal-desc {
             font-size: 0.9rem;
-            color: var(--text-secondary);
+            color: #555555 !important;
             line-height: 1.5;
             margin-bottom: 24px;
         }
@@ -490,7 +493,6 @@
             gap: 12px;
         }
         
-        /* Flex Alignment helpers */
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -500,9 +502,9 @@
         .chart-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-primary);
+            color: #1a1a1a !important;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid #e4e4e4 !important;
             padding-bottom: 10px;
         }
         
@@ -515,26 +517,20 @@
             gap: 10px;
         }
         
-        /* Toast Notification Container Override */
         #toast-container {
             z-index: 1100;
         }
     </style>
 </head>
 <body>
-    <!-- Ambient Background Blobs -->
-    <div class="ambient-blob blob-1"></div>
-    <div class="ambient-blob blob-2"></div>
-    <div class="ambient-blob blob-3"></div>
-
     <div class="admin-wrapper">
         {% if not logged_in %}
         <!-- ==================== LOGIN VIEW ==================== -->
         <div class="login-container">
             <div class="login-card glass-card">
                 <div class="login-header">
-                    <img src="/static/icon1.png" alt="Logo" style="width: 50px; height: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));">
-                    <h2>SnapStream <span>Admin</span></h2>
+                    <img src="/static/icon1.png" alt="Logo" style="width: 50px; height: 50px; margin-bottom: 15px;">
+                    <h2>VidsDownloader <span>Admin</span></h2>
                     <p>Enter credentials to access stats dashboard</p>
                 </div>
                 
@@ -549,7 +545,7 @@
                         <input type="password" id="password" class="form-control" placeholder="Admin password" required autocomplete="current-password">
                     </div>
                     
-                    <button type="submit" id="btn-login" class="btn primary-btn btn-glowing" style="width: 100%; margin-top: 10px; justify-content: center;">
+                    <button type="submit" id="btn-login" class="btn primary-btn" style="width: 100%; margin-top: 10px; justify-content: center;">
                         <span>Sign In</span>
                     </button>
                 </form>
@@ -559,7 +555,7 @@
         <!-- ==================== DASHBOARD VIEW ==================== -->
         <header class="admin-header">
             <div class="admin-logo">
-                <h1>SnapStream <span>Admin Portal</span></h1>
+                <h1>VidsDownloader <span>Admin Portal</span></h1>
             </div>
             <div class="admin-header-actions">
                 <a href="/" class="btn secondary-btn" style="padding: 8px 16px; font-size: 0.9rem;">
@@ -576,7 +572,7 @@
                     </svg>
                     <span>Change Credentials</span>
                 </button>
-                <button id="btn-open-reset" class="btn text-btn" style="color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.15); padding: 8px 16px; font-size: 0.9rem;">
+                <button id="btn-open-reset" class="btn text-btn" style="color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.15); padding: 8px 16px; font-size: 0.9rem;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
                         <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/>
                     </svg>
@@ -593,28 +589,34 @@
             </div>
         </header>
 
-        <!-- Cookie Rotation Status Bar -->
-        <div id="cookie-status-banner" class="glass-card" style="margin-bottom: 30px; padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; border-color: rgba(255, 255, 255, 0.08); transition: var(--transition-smooth);">
+        <!-- Cookie Validity Banner -->
+        <div id="cookie-status-banner" class="glass-card" style="margin-bottom: 30px; padding: 20px 25px; display: flex; align-items: center; justify-content: space-between;">
             <div class="d-flex" style="gap: 15px;">
                 <div id="cookie-status-dot" style="width: 12px; height: 12px; border-radius: 50%; background: #64748b; box-shadow: 0 0 10px #64748b; transition: all 0.3s ease;"></div>
                 <div>
-                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">
-                        Cookie Status: <span id="cookie-status-text">Checking...</span>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">
+                        Cookie Status: <span id="cookie-status-text">Checking validity...</span>
                     </div>
-                    <div id="cookie-status-time" style="font-size: 0.75rem; color: var(--text-muted);">
-                        Last updated: --
+                    <div id="cookie-status-time" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                        Last validated: --
                     </div>
-                    <div id="cookie-expiry-time" style="font-size: 0.75rem; color: #38bdf8; margin-top: 2px; font-weight: 500; display: none;"></div>
+                    <div id="cookie-expiry-time" style="font-size: 0.78rem; color: #e1306c; margin-top: 2px; font-weight: 500; display: none;"></div>
                 </div>
             </div>
-            <div id="cookie-error-msg" style="font-size: 0.8rem; color: var(--accent-rose); font-weight: 500; max-width: 50%; text-align: right; line-height: 1.4; word-break: break-word;">
+            
+            <div class="d-flex gap-10">
+                <button type="button" id="btn-check-cookies" class="btn secondary-btn" style="padding: 8px 16px; font-size: 0.85rem; border-color: #e1306c; color: #e1306c;">
+                    Check Validity Now
+                </button>
             </div>
+            
+            <div id="cookie-error-msg" style="font-size: 0.8rem; color: #f43f5e; font-weight: 500; max-width: 40%; text-align: right; line-height: 1.4; word-break: break-word; display: none;"></div>
         </div>
 
         <!-- Cookie Manager Card -->
-        <div class="glass-card" style="margin-bottom: 30px; border-color: rgba(139, 92, 246, 0.15);">
-            <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; color: var(--accent-purple);">
+        <div class="glass-card" style="margin-bottom: 30px;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; color: #e1306c;">
                     <circle cx="12" cy="12" r="10"/>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                     <path d="M2 12h20"/>
@@ -622,18 +624,17 @@
                 <span>Manual Instagram Cookies Importer</span>
             </h3>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4;">
-                Datacenter IP addresses (like Render, AWS, GCP) are frequently blocked by Instagram's firewalls. If the automatic login fails, you can upload your <strong>cookies.txt</strong> file directly or paste the cookie data in <strong>Netscape Cookie format</strong> below to restore downloading.
+                Datacenter IP addresses are frequently blocked by Instagram. You can upload your <strong>cookies.txt</strong> file directly or paste cookie data in <strong>Netscape Cookie format</strong> below to restore downloading.
             </p>
             <form id="cookie-upload-form">
                 <div class="form-group" style="margin-bottom: 15px;">
-                    <textarea id="cookies-text-input" placeholder="Paste Netscape cookie format text here (e.g., from EditThisCookie extension)..." required style="width: 100%; min-height: 120px; font-family: monospace; font-size: 0.8rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px; color: var(--text-primary); outline: none; resize: vertical; margin-bottom: 15px;"></textarea>
+                    <textarea id="cookies-text-input" placeholder="Paste Netscape cookie format text here..." required style="width: 100%; min-height: 120px; font-family: monospace; font-size: 0.8rem; background: #ffffff; border: 1px solid #e4e4e4; border-radius: 8px; padding: 12px; color: var(--text-primary); outline: none; resize: vertical; margin-bottom: 15px;"></textarea>
                     
-                    <!-- File upload selectors -->
                     <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
                         <span style="font-size: 0.85rem; color: var(--text-muted);">Or select file:</span>
                         <input type="file" id="cookie-file-input" accept=".txt" style="display: none;">
                         <button type="button" class="btn secondary-btn" id="btn-select-file" style="padding: 6px 14px; font-size: 0.8rem;">Choose cookies.txt</button>
-                        <span id="selected-filename" style="font-size: 0.8rem; color: var(--text-secondary);">No file chosen</span>
+                        <span id="selected-filename" style="font-size: 0.8rem; color: var(--text-muted);">No file chosen</span>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
@@ -670,7 +671,6 @@
 
         <!-- Charts Segment -->
         <section class="charts-grid">
-            <!-- Line Chart: Page Views vs Downloads -->
             <div class="glass-card">
                 <h3 class="chart-title">Traffic Trend (Last 30 Days)</h3>
                 <div class="chart-container">
@@ -678,11 +678,10 @@
                 </div>
             </div>
             
-            <!-- Pie/Doughnut Chart: Platforms & Browsers Toggle -->
             <div class="glass-card">
-                <div class="flex-between" style="border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 10px; margin-bottom: 20px;">
+                <div class="flex-between" style="border-bottom: 1px solid #e4e4e4; padding-bottom: 10px; margin-bottom: 20px;">
                     <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">Device Share</h3>
-                    <select id="device-chart-toggle" style="background: rgba(20, 20, 35, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-primary); border-radius: 6px; padding: 4px 8px; font-family: var(--font-sans); font-size: 0.8rem; outline: none;">
+                    <select id="device-chart-toggle" style="background: #ffffff; border: 1px solid #e4e4e4; color: var(--text-primary); border-radius: 6px; padding: 4px 8px; font-family: var(--font-sans); font-size: 0.8rem; outline: none;">
                         <option value="platforms">Operating Systems</option>
                         <option value="browsers">Web Browsers</option>
                     </select>
@@ -693,7 +692,7 @@
             </div>
         </section>
 
-        <!-- Downloads Log Log Table Card -->
+        <!-- Downloads Log Table Card -->
         <section class="glass-card">
             <div class="table-header-actions">
                 <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">Download Logs</h3>
@@ -751,15 +750,15 @@
             <p class="modal-desc">Are you sure you want to reset all visitor counts and stats? This action is permanent and cannot be undone.</p>
             <div class="modal-buttons">
                 <button id="btn-confirm-cancel" class="btn secondary-btn" style="padding: 10px 20px;">Cancel</button>
-                <button id="btn-confirm-reset" class="btn primary-btn" style="background: var(--accent-rose); border-color: rgba(244, 63, 94, 0.2); padding: 10px 20px;">Yes, Reset</button>
+                <button id="btn-confirm-reset" class="btn primary-btn" style="background: #f43f5e; border-color: rgba(244, 63, 94, 0.2); padding: 10px 20px;">Yes, Reset</button>
             </div>
         </div>
     </div>
 
     <!-- Change Password Modal Overlay -->
     <div id="password-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 400px; text-align: left; border-color: rgba(139, 92, 246, 0.25); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.08);">
-            <div class="modal-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border-color: rgba(139, 92, 246, 0.2);">
+        <div class="modal-content" style="max-width: 400px; text-align: left;">
+            <div class="modal-icon" style="background: rgba(225, 48, 108, 0.08); color: #e1306c; border-color: rgba(225, 48, 108, 0.15);">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -769,11 +768,11 @@
             <form id="password-change-form">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="new-username" style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">New Username (Optional)</label>
-                    <input type="text" id="new-username" class="form-control" placeholder="Enter new username" style="width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+                    <input type="text" id="new-username" class="form-control" placeholder="Enter new username" style="width: 100%; outline: none;">
                 </div>
                 <div class="form-group" style="margin-bottom: 24px;">
                     <label for="new-password" style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">New Password</label>
-                    <input type="password" id="new-password" class="form-control" placeholder="Enter new password" required style="width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); outline: none;">
+                    <input type="password" id="new-password" class="form-control" placeholder="Enter new password" required style="width: 100%; outline: none;">
                 </div>
                 <div class="modal-buttons" style="display: flex; gap: 12px; justify-content: flex-end;">
                     <button type="button" id="btn-password-cancel" class="btn secondary-btn" style="padding: 10px 20px;">Cancel</button>
@@ -786,10 +785,8 @@
     <!-- Floating toast container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Scripting for interactions and telemetry loading -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Helper Toast Messages
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
@@ -845,7 +842,7 @@
                         loginBtn.innerHTML = '<span>Sign In</span>';
                     }
                 });
-                return; // Stop execution if we are on the login page
+                return;
             }
 
             // -------------------- DASHBOARD CONTROLLER --------------------
@@ -853,15 +850,12 @@
             let filteredHistoryData = [];
             let rawStatsData = {};
             
-            // Pagination Settings
             let currentPage = 1;
             const itemsPerPage = 8;
 
-            // Chart instances
             let trafficTrendChart = null;
             let deviceShareChart = null;
 
-            // Load Telemetry Dashboard Data
             async function loadDashboardData() {
                 try {
                     const response = await fetch('/admin/api/stats');
@@ -877,16 +871,9 @@
                     rawStatsData = data.stats || {};
                     rawHistoryData = data.history || [];
                     
-                    // Render Metrics Cards
                     renderMetrics();
-                    
-                    // Render Charts
                     renderCharts();
-                    
-                    // Filter and render history logs
                     applyFilters();
-                    
-                    // Render Cookie Rotation Status
                     renderCookieStatus(data.cookie_status);
                     
                 } catch (err) {
@@ -895,16 +882,10 @@
             }
 
             function renderMetrics() {
-                // Total Page Views
                 document.getElementById('stat-views').textContent = rawStatsData.total_page_views || 0;
-                
-                // Meta info queries
                 document.getElementById('stat-queries').textContent = rawStatsData.total_api_info || 0;
-                
-                // Video downloads
                 document.getElementById('stat-downloads').textContent = rawStatsData.total_api_download || 0;
                 
-                // Total Unique Visitors across all daily logs
                 let uniquesSet = new Set();
                 if (rawStatsData.daily) {
                     Object.values(rawStatsData.daily).forEach(day => {
@@ -924,17 +905,17 @@
                 const errorMsg = document.getElementById('cookie-error-msg');
                 
                 if (!cookieStatus) {
-                    banner.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    banner.style.borderColor = '#e4e4e4';
                     dot.style.background = '#64748b';
-                    dot.style.boxShadow = '0 0 10px #64748b';
-                    text.textContent = 'No Status Recorded';
-                    text.style.color = 'var(--text-secondary)';
-                    time.textContent = 'Run update_cookies.py to initialize';
+                    dot.style.boxShadow = 'none';
+                    text.textContent = 'No Cookies Loaded';
+                    text.style.color = '#555555';
+                    time.textContent = 'Please copy-paste or upload your cookies.txt';
                     errorMsg.style.display = 'none';
                     return;
                 }
                 
-                const lastAttempt = cookieStatus.last_attempt_time || '--';
+                const lastAttempt = cookieStatus.last_updated || '--';
                 const lastSuccess = cookieStatus.last_success_time || '--';
                 
                 const expiryEl = document.getElementById('cookie-expiry-time');
@@ -945,37 +926,31 @@
                     expiryEl.style.display = 'none';
                 }
                 
-                if (cookieStatus.status === 'success') {
+                if (cookieStatus.status === 'success' || cookieStatus.status === 'checking') {
                     banner.style.borderColor = 'rgba(16, 185, 129, 0.25)';
-                    banner.style.boxShadow = '0 20px 40px -15px rgba(16, 185, 129, 0.05)';
+                    banner.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.05)';
                     dot.style.background = '#10b981';
                     dot.style.boxShadow = '0 0 10px #10b981';
-                    text.textContent = 'Active & Day-to-Day Updated';
+                    text.textContent = cookieStatus.status === 'checking' ? 'Validating...' : 'Active & Validated';
                     text.style.color = '#10b981';
-                    time.textContent = `Last successful rotation: ${lastSuccess}`;
+                    time.textContent = `Last validated: ${lastAttempt}`;
                     errorMsg.style.display = 'none';
                 } else if (cookieStatus.status === 'error') {
                     banner.style.borderColor = 'rgba(244, 63, 94, 0.25)';
-                    banner.style.boxShadow = '0 20px 40px -15px rgba(244, 63, 94, 0.05)';
+                    banner.style.boxShadow = '0 10px 30px rgba(244, 63, 94, 0.05)';
                     dot.style.background = '#f43f5e';
                     dot.style.boxShadow = '0 0 10px #f43f5e';
-                    text.textContent = 'Rotation Failed / Error';
+                    text.textContent = 'Invalid / Expired Cookies';
                     text.style.color = '#f43f5e';
-                    time.textContent = `Last attempted: ${lastAttempt} | Last success: ${lastSuccess}`;
-                    errorMsg.textContent = cookieStatus.error_message || 'Unknown error occurred during rotation';
+                    time.textContent = `Last validated: ${lastAttempt}`;
+                    errorMsg.textContent = cookieStatus.error_message || 'Instagram rejected cookies. Please upload fresh session cookies.';
                     errorMsg.style.display = 'block';
                 }
             }
 
-            // Chart Render Functions
             function renderCharts() {
-                // 1. Process Trend Data for Line Chart
                 const dailyData = rawStatsData.daily || {};
-                
-                // Get list of last 30 days sorted
                 const sortedDates = Object.keys(dailyData).sort().slice(-30);
-                
-                // Fallback to empty day if no dates exist
                 const datesLabels = sortedDates.length > 0 ? sortedDates : [new Date().toISOString().split('T')[0]];
                 const viewsPoints = sortedDates.map(d => dailyData[d].page_views || 0);
                 const downloadsPoints = sortedDates.map(d => dailyData[d].api_download || 0);
@@ -985,7 +960,6 @@
                     downloadsPoints.push(0);
                 }
 
-                // Destroy old instance if exists
                 if (trafficTrendChart) {
                     trafficTrendChart.destroy();
                 }
@@ -999,8 +973,8 @@
                             {
                                 label: 'Page Views',
                                 data: viewsPoints,
-                                borderColor: '#4f46e5',
-                                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                                borderColor: '#e1306c',
+                                backgroundColor: 'rgba(225, 48, 108, 0.05)',
                                 tension: 0.35,
                                 fill: true,
                                 borderWidth: 3
@@ -1008,8 +982,8 @@
                             {
                                 label: 'Downloads Triggered',
                                 data: downloadsPoints,
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                                borderColor: '#833ab4',
+                                backgroundColor: 'rgba(131, 58, 180, 0.02)',
                                 tension: 0.35,
                                 fill: true,
                                 borderWidth: 3
@@ -1021,31 +995,29 @@
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                labels: { color: '#cbd5e1', font: { family: 'Outfit', size: 12 } }
+                                labels: { color: '#555555', font: { family: 'Poppins', size: 12 } }
                             }
                         },
                         scales: {
                             x: {
-                                grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                                ticks: { color: '#64748b', font: { family: 'Outfit' } }
+                                grid: { color: 'rgba(0, 0, 0, 0.03)' },
+                                ticks: { color: '#888888', font: { family: 'Poppins' } }
                             },
                             y: {
-                                grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                                ticks: { color: '#64748b', font: { family: 'Outfit' }, stepSize: 1 },
+                                grid: { color: 'rgba(0, 0, 0, 0.03)' },
+                                ticks: { color: '#888888', font: { family: 'Poppins' }, stepSize: 1 },
                                 beginAtZero: true
                             }
                         }
                     }
                 });
 
-                // 2. Render OS / Browser Share Chart
                 renderDeviceShare();
             }
 
             function renderDeviceShare() {
                 const chartToggle = document.getElementById('device-chart-toggle').value;
                 const sourceData = rawStatsData[chartToggle] || {};
-                
                 const labels = Object.keys(sourceData);
                 const values = Object.values(sourceData);
                 
@@ -1054,12 +1026,11 @@
                 }
                 
                 const ctxShare = document.getElementById('deviceShareChart').getContext('2d');
-                
                 const displayLabels = labels.length > 0 ? labels : ['No Data'];
                 const displayValues = values.length > 0 ? values : [1];
                 const bgColors = labels.length > 0 
-                    ? ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f97316', '#64748b']
-                    : ['rgba(255,255,255,0.05)'];
+                    ? ['#e1306c', '#833ab4', '#f77737', '#00c853', '#0ea5e9', '#64748b']
+                    : ['#f4f6f9'];
                 
                 deviceShareChart = new Chart(ctxShare, {
                     type: 'doughnut',
@@ -1069,7 +1040,7 @@
                             data: displayValues,
                             backgroundColor: bgColors,
                             borderWidth: 1,
-                            borderColor: '#09090e'
+                            borderColor: '#ffffff'
                         }]
                     },
                     options: {
@@ -1078,7 +1049,7 @@
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: { color: '#cbd5e1', font: { family: 'Outfit', size: 11 }, padding: 12 }
+                                labels: { color: '#555555', font: { family: 'Poppins', size: 11 }, padding: 12 }
                             }
                         },
                         cutout: '65%'
@@ -1097,7 +1068,6 @@
 
             function applyFilters() {
                 const query = logSearchInput.value.toLowerCase().trim();
-                
                 if (!query) {
                     filteredHistoryData = [...rawHistoryData];
                 } else {
@@ -1107,7 +1077,6 @@
                         return title.includes(query) || creator.includes(query);
                     });
                 }
-                
                 renderLogsTable();
             }
 
@@ -1136,9 +1105,8 @@
                 const endIndex = Math.min(startIndex + itemsPerPage, filteredHistoryData.length);
                 const pageItems = filteredHistoryData.slice(startIndex, endIndex);
                 
-                pageItems.forEach((item, index) => {
+                pageItems.forEach((item) => {
                     const row = document.createElement('tr');
-                    
                     const creatorText = item.uploader ? `@${item.uploader}` : 'Unknown';
                     const proxyThumbnailUrl = `/api/proxy-image?url=${encodeURIComponent(item.thumbnail || '')}`;
                     
@@ -1178,12 +1146,10 @@
                 });
 
                 tbody.querySelectorAll('.btn-delete').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
+                    btn.addEventListener('click', async () => {
                         const url = btn.getAttribute('data-url');
-                        if (url) {
-                            if (confirm('Delete this download from history? This updates the public list as well.')) {
-                                await deleteHistoryItem(url);
-                            }
+                        if (url && confirm('Delete this download from history?')) {
+                            await deleteHistoryItem(url);
                         }
                     });
                 });
@@ -1194,14 +1160,10 @@
             function updatePagination(totalItems) {
                 const startIndex = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
                 const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
-                
                 document.getElementById('pagination-info').textContent = `Showing ${startIndex} to ${endIndex} of ${totalItems} logs`;
                 
-                const prevBtn = document.getElementById('btn-prev');
-                const nextBtn = document.getElementById('btn-next');
-                
-                prevBtn.disabled = currentPage === 1;
-                nextBtn.disabled = currentPage * itemsPerPage >= totalItems;
+                document.getElementById('btn-prev').disabled = currentPage === 1;
+                document.getElementById('btn-next').disabled = currentPage * itemsPerPage >= totalItems;
             }
 
             document.getElementById('btn-prev').addEventListener('click', () => {
@@ -1244,14 +1206,8 @@
             const cancelResetBtn = document.getElementById('btn-confirm-cancel');
             const confirmResetBtn = document.getElementById('btn-confirm-reset');
 
-            openResetBtn.addEventListener('click', () => {
-                resetModal.classList.add('active');
-            });
-
-            cancelResetBtn.addEventListener('click', () => {
-                resetModal.classList.remove('active');
-            });
-
+            openResetBtn.addEventListener('click', () => resetModal.classList.add('active'));
+            cancelResetBtn.addEventListener('click', () => resetModal.classList.remove('active'));
             confirmResetBtn.addEventListener('click', async () => {
                 resetModal.classList.remove('active');
                 try {
@@ -1287,9 +1243,7 @@
             }
 
             if (cancelPasswordBtn) {
-                cancelPasswordBtn.addEventListener('click', () => {
-                    passwordModal.classList.remove('active');
-                });
+                cancelPasswordBtn.addEventListener('click', () => passwordModal.classList.remove('active'));
             }
 
             if (passwordForm) {
@@ -1317,6 +1271,36 @@
                         }
                     } catch (err) {
                         showToast(err.message, 'error');
+                    }
+                });
+            }
+
+            // -------------------- COOKIE VALIDATOR CONTROLLER --------------------
+            const checkCookiesBtn = document.getElementById('btn-check-cookies');
+            if (checkCookiesBtn) {
+                checkCookiesBtn.addEventListener('click', async () => {
+                    checkCookiesBtn.disabled = true;
+                    checkCookiesBtn.textContent = 'Checking...';
+                    
+                    try {
+                        const response = await fetch('/admin/api/check-cookies', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        
+                        if (response.ok && data.success) {
+                            showToast(data.message || 'Cookies are valid and active!', 'success');
+                        } else {
+                            showToast(data.error || 'Cookies validation failed.', 'error');
+                        }
+                        
+                        loadDashboardData();
+                    } catch (err) {
+                        showToast('Error validating cookies: ' + err.message, 'error');
+                    } finally {
+                        checkCookiesBtn.disabled = false;
+                        checkCookiesBtn.textContent = 'Check Validity Now';
                     }
                 });
             }
@@ -1371,7 +1355,7 @@
                             cookiesTextInput.value = '';
                             fileInput.value = '';
                             selectedFilename.textContent = 'No file chosen';
-                            loadDashboardData(); // Reload banner status
+                            loadDashboardData();
                         } else {
                             throw new Error(resData.error || 'Failed to import cookies');
                         }

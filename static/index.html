@@ -1,349 +1,578 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vids Downloader - Free Reels Downloader | Insta Reels Downloader</title>
-    <meta name="description" content="Vids Downloader is the fastest free reels downloader to save Instagram videos. Download reels online instantly with our secure, login-free insta reels downloader.">
-    <meta name="keywords" content="reels downloader, free reels downloader, insta reels downloader, vids downloader, download instagram reels, download reels online, save ig reels, free video downloader">
-    <link rel="canonical" href="https://vidsdownloader.in/">
-    <link rel="shortcut icon" href="/static/icon1.png" type="image/png">
+{% extends "base.html" %}
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vidsdownloader.in/">
-    <meta property="og:title" content="Vids Downloader - Free Insta Reels Downloader">
-    <meta property="og:description" content="Use Vids Downloader to download Instagram Reels and social videos online for free. Clean, fast, and no login required.">
-    <meta property="og:image" content="https://vidsdownloader.in/static/og-image.png">
+{% block title %}Instagram Reels Downloader — Save HD MP4, No Watermark | VidsDownloader{% endblock %}
+{% block description %}Free Instagram Reels downloader. Paste any public Reel link to save it as HD MP4 — no watermark, no login, no app needed. Works on iPhone, Android & PC instantly.{% endblock %}
+{% block canonical %}https://vidsdownloader.in/{% endblock %}
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://vidsdownloader.in/">
-    <meta property="twitter:title" content="Vids Downloader - Free Insta Reels Downloader">
-    <meta property="twitter:description" content="Use Vids Downloader to download Instagram Reels and social videos online for free. Clean, fast, and no login required.">
-    <meta property="twitter:image" content="https://vidsdownloader.in/static/og-image.png">
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="/static/style.css">
-
-    <!-- Schema.org WebApplication JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Vids Downloader",
-      "alternateName": "SnapStream Video Downloader",
-      "url": "https://vidsdownloader.in/",
-      "image": "https://vidsdownloader.in/static/og-image.png",
-      "description": "Download Instagram Reels and social videos online for free. Fast, private, and requires no login or installation.",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "All",
-      "browserRequirements": "Requires HTML5 compatible browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0.00",
-        "priceCurrency": "USD"
+{% block schema %}
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "VidsDownloader — Instagram Reels Downloader",
+    "url": "https://vidsdownloader.in/",
+    "description": "Free browser-based tool to download public Instagram Reels in HD MP4 format. No login, no watermark, no app required. Works on iPhone, Android, and PC.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web Browser, iOS, Android, Windows, macOS, Linux",
+    "browserRequirements": "Requires JavaScript. Works in Chrome, Safari, Firefox, Edge.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Download Instagram Reels in HD MP4",
+      "No watermark on downloaded videos",
+      "No login or account required",
+      "Works on iPhone, Android, and PC",
+      "Instant automatic fetching on link paste",
+      "100% free with no subscription"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "VidsDownloader",
+    "url": "https://vidsdownloader.in/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://vidsdownloader.in/?q={search_term_string}"
       },
-      "featureList": [
-        "Instant in-memory streaming",
-        "No login required",
-        "Zero server disk storage",
-        "Full audio track inclusion"
-      ]
+      "query-input": "required name=search_term_string"
     }
-    </script>
-</head>
-<body>
-    <!-- Ambient Background Blobs -->
-    <div class="ambient-blob blob-1"></div>
-    <div class="ambient-blob blob-2"></div>
-    <div class="ambient-blob blob-3"></div>
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Download Instagram Reels for Free",
+    "description": "Download any public Instagram Reel as an HD MP4 file for free using VidsDownloader — no app or login required.",
+    "totalTime": "PT1M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Copy the Instagram Reel link",
+        "text": "Open Instagram, find the public Reel you want to download, tap the three-dot menu at the top-right of the post, and select 'Copy Link'. The URL is now in your clipboard."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Paste the link into VidsDownloader",
+        "text": "Go to VidsDownloader.in. Tap the input field and paste the copied Instagram link — the tool will automatically detect the URL and begin fetching the video details instantly."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Download the HD MP4 video",
+        "text": "Once the thumbnail preview appears with the creator name and video details, tap the 'Download Video' button. The HD MP4 file will save directly to your device with no watermark."
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is VidsDownloader free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. VidsDownloader is a completely free web-based utility. There are no fees, subscriptions, or hidden charges required to fetch and download public Instagram Reels."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to log in to Instagram to download Reels?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. You do not need to log in to your Instagram account or provide any login details. VidsDownloader processes public Reel URLs independently without requiring any credentials."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I download private Instagram Reels?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. VidsDownloader only supports downloading public Reels and videos accessible without logging in. Private account content cannot be downloaded as we respect user privacy restrictions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I download Instagram Reels on iPhone?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Open VidsDownloader in Safari or Chrome on your iPhone, paste the Instagram Reel link, and tap Download Video. The MP4 file saves to your Files app. You can then share it to your Photos camera roll."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I download Instagram Reels on Android?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Open Chrome on your Android device, go to VidsDownloader, paste the Reel link and tap Download. The MP4 file saves directly to your Downloads folder and appears in your Gallery app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to install an app to download Instagram Reels?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. VidsDownloader is 100% browser-based. It works in Chrome, Safari, Firefox, Edge, and any other modern browser with zero installation required on any device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will downloaded Reels have a watermark?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Videos downloaded through VidsDownloader are saved in their original HD quality with no watermark added. You get a clean MP4 file exactly as uploaded by the creator."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is my Instagram Reel link not working?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Common reasons include: the account is private, the video has been deleted, the link format is incorrect, or Instagram is temporarily blocking access. Ensure the profile is public and the URL is copied correctly from the Share menu."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is my downloaded Instagram Reel saved?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Downloaded files are saved by your browser to your device's default Downloads folder. On iPhone (Safari), files go to the Files app Downloads folder. On Android, files appear in the Downloads folder and your Gallery app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What video quality are downloaded Reels?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "VidsDownloader fetches the highest available video quality for each Reel — typically 1080p HD for most content uploaded to Instagram. The output is always a standard MP4 file compatible with all devices."
+        }
+      }
+    ]
+  }
+]
+</script>
+{% endblock %}
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo-area">
-                <img src="/static/icon1.png" alt="SnapStream Logo" class="logo-image" style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));">
-                <h1 class="logo-text">Snap<span>Stream</span></h1>
+{% block content %}
+<!-- Configure Downloader Snippet Scope Variables -->
+{% set active_tool = "reels" %}
+{% set hero_title = "Instagram Reels Downloader & Saver" %}
+{% set hero_subtitle = "Download Instagram reels in HD format to any device for free. Copy the link and paste it above to save videos fast without a watermark, registration, or login." %}
+{% set placeholder_text = "Paste Instagram Reel link here..." %}
+{% set trust_output_type = "MP4 Video Output" %}
+
+<!-- Downloader Component -->
+{% include "downloader.html" %}
+<!-- Trust Badges & Disclaimer Section -->
+<section class="trust-badges-section">
+    <div class="badges-row">
+        <div class="badge-pill orange-pill">
+            <span class="badge-pill-icon orange-bg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </span>
+            <span class="badge-pill-text">No app — works in any browser</span>
+        </div>
+        <div class="badge-pill green-pill">
+            <span class="badge-pill-icon green-bg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <span class="badge-pill-text">Original quality kept</span>
+        </div>
+        <div class="badge-pill pink-pill">
+            <span class="badge-pill-icon pink-bg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </span>
+            <span class="badge-pill-text">All video lengths supported</span>
+        </div>
+    </div>
+    <p class="trust-disclaimer">VidsDownloader is not affiliated with Instagram™ or Meta Platforms, Inc. We do not host any Instagram content. All rights belong to their respective owners. Only publicly accessible content can be saved. Users are responsible for ensuring their use complies with applicable copyright law and the platform's terms. Read our <a href="/privacy">Privacy Policy</a>.</p>
+</section>
+
+<!-- Why Choose VidsDownloader Section -->
+<section class="features-list-section">
+    <div class="features-header">
+        <h2 class="features-main-title">Download Instagram Reels Free — Why Choose VidsDownloader?</h2>
+        <p class="features-main-subtitle">Four reasons VidsDownloader stands apart as the fastest Instagram Reel saving tool online.</p>
+    </div>
+    
+    <div class="feature-item">
+        <span class="feature-tag">SPEED</span>
+        <h3 class="feature-title">Reel Ready in Under 3 Seconds</h3>
+        <p class="feature-desc">From paste to file in seconds. VidsDownloader skips the waiting screens, frozen progress bars, and timeout errors that plague other tools. The moment the link is pasted, the request goes out and the result comes back — no intermediate steps, no queue, no drama.</p>
+    </div>
+    
+    <hr class="feature-divider">
+    
+    <div class="feature-item">
+        <span class="feature-tag">PRIVACY</span>
+        <h3 class="feature-title">Zero Data Stored — Zero Tracking</h3>
+        <p class="feature-desc">The URL you submit is used once to fetch your file and then discarded from our servers. We use Google Analytics to understand traffic — this collects anonymous usage data but is never linked to what you download. No account required, no download history stored.</p>
+    </div>
+    
+    <hr class="feature-divider">
+    
+    <div class="feature-item">
+        <span class="feature-tag">COMPATIBILITY</span>
+        <h3 class="feature-title">Every Device. Every Browser. No App.</h3>
+        <p class="feature-desc">VidsDownloader lives in your browser tab. There is nothing to install, nothing to update, and nothing stored on your device beyond the file you chose to save. It behaves identically whether you open it on a five-year-old Android or the latest MacBook — the interface adapts, the output does not change.</p>
+    </div>
+    
+    <hr class="feature-divider">
+    
+    <div class="feature-item">
+        <span class="feature-tag">RELIABILITY</span>
+        <h3 class="feature-title">Consistent Results on Any Public Post</h3>
+        <p class="feature-desc">VidsDownloader handles standard Reel links, carousel posts, and IGTV content from any public profile. The link format does not matter — with or without tracking parameters, shortened or full URL, copied from the app or the browser. If the post is public, the result is a working file.</p>
+    </div>
+</section>
+
+<!-- Save Instagram Videos Online Free Section -->
+<section id="info-section" class="info-block-section">
+    <h2 class="section-title-pink">Save Instagram Videos Online Free</h2>
+    <div class="info-content">
+        <p>VidsDownloader lets you keep a personal offline copy of public Instagram videos — working as a dedicated Instagram video saver for PC, Mac, iPhone and Android without any app or software. Built specifically for Instagram video posts, it gives a faster, cleaner experience for the content type you actually need.</p>
+        <p>An Instagram video downloader is a browser-based tool that lets you save public Instagram videos to your device for offline viewing — no account or app installation required.</p>
+        
+        <ul class="check-list">
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Content creators saving inspiration from public accounts for personal offline reference</span>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Anyone who wants to watch public Instagram videos offline without an internet connection</span>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Users on slow or limited data connections who need a file saved locally</span>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Anyone saving public videos for personal offline viewing on their own device</span>
+            </li>
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Anyone who wishes Instagram offered a simple save-to-device option</span>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Visual Steps Section -->
+<section id="how-it-works" class="visual-steps-section">
+    <div class="steps-header">
+        <h2 class="section-title-pink">How to Save an Instagram Video</h2>
+        <p class="section-subtitle">Three steps is all it takes. No account needed, no app to install — just a link and a click.</p>
+    </div>
+    
+    <div class="steps-container">
+        <!-- Step 1 Card -->
+        <div class="step-card">
+            <div class="step-info">
+                <h3 class="step-card-title">Step 1 — Copy the Video Link</h3>
+                <ol class="step-ordered-list">
+                    <li>
+                        <span class="step-num">1</span>
+                        <span class="step-text">Open Instagram and find the video post you want to save</span>
+                    </li>
+                    <li>
+                        <span class="step-num">2</span>
+                        <span class="step-text">Tap the three-dot menu at the top-right of the post</span>
+                    </li>
+                    <li>
+                        <span class="step-num">3</span>
+                        <span class="step-text">Select "Copy Link" — the URL is now on your clipboard</span>
+                    </li>
+                </ol>
             </div>
-            <p class="tagline">Sleek, fast, and simple social video downloader</p>
-            
-            <!-- Tab Navigation Switcher -->
-            <nav class="tab-navigation" aria-label="Main Navigation">
-                <button type="button" class="tab-btn active" data-tab="downloader-tab">Downloader</button>
-                <button type="button" class="tab-btn" data-tab="guide-tab">How It Works</button>
-                <button type="button" class="tab-btn" data-tab="privacy-tab">Privacy & FAQ</button>
-            </nav>
-        </header>
-
-        <!-- Tab Contents Wrapper -->
-        <div class="tab-content-wrapper">
-            
-            <!-- Tab 1: Downloader & History -->
-            <div id="downloader-tab" class="tab-panel">
-                <!-- Downloader Card -->
-                <section class="card glassmorphic" aria-labelledby="downloader-title">
-                    <h2 id="downloader-title" class="sr-only">Video & Reel Downloader</h2>
-                    
-                    <!-- URL Form -->
-                    <div class="downloader-form">
-                        <div class="input-group">
-                            <label for="reel-url" class="sr-only">Video Link</label>
-                            <div class="input-wrapper">
-                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                                </svg>
-                                <input type="url" id="reel-url" placeholder="Paste social video link here..." required autocomplete="off">
-                                <button type="button" id="paste-btn" class="icon-btn" title="Paste link from clipboard">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                                        <rect x="8" y="2" width="8" height="4" rx="1" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                            </div>
+            <div class="step-visual">
+                <div class="phone-frame">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen instagram-screen">
+                        <div class="ig-header">
+                            <div class="ig-avatar"></div>
+                            <div class="ig-username">creator_profile</div>
                         </div>
-
-                        <!-- Fetching Loading State -->
-                        <div id="fetching-loader" class="fetching-loader hidden">
-                            <div class="spinner-glow"></div>
-                            <span id="fetching-text">Loading video details, please wait...</span>
+                        <div class="ig-post-body">
+                            <div class="ig-play-icon">▶</div>
                         </div>
-                    </div>
-
-                    <!-- Preview Area (Dynamic) -->
-                    <div id="preview-area" class="preview-area hidden">
-                        <div class="preview-card">
-                            <div class="thumbnail-wrapper">
-                                <img id="preview-thumb" src="" alt="Video Thumbnail">
-                                <span id="preview-duration" class="duration-tag">0:00</span>
-                            </div>
-                            <div class="preview-details">
-                                <div class="creator-badge">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
-                                    <span id="preview-creator">@username</span>
+                        <div class="ig-bottom-sheet">
+                            <div class="sheet-drag-handle"></div>
+                            <div class="sheet-grid">
+                                <div class="sheet-item">
+                                    <div class="sheet-icon share-icon">✈</div>
+                                    <span>Share</span>
                                 </div>
-                                <p id="preview-title" class="preview-title">Video Description</p>
-                                <div class="preview-actions">
-                                    <button type="button" id="download-btn" class="btn primary-btn btn-glowing">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                            <polyline points="7 10 12 15 17 10"/>
-                                            <line x1="12" y1="15" x2="12" y2="3"/>
-                                        </svg>
-                                        <span>Download Now</span>
-                                    </button>
-                                    <button type="button" id="cancel-preview-btn" class="btn text-btn">Clear</button>
+                                <div class="sheet-item active-item">
+                                    <div class="sheet-icon link-icon">🔗</div>
+                                    <span>Link</span>
+                                </div>
+                                <div class="sheet-item">
+                                    <div class="sheet-icon save-icon">📥</div>
+                                    <span>Save</span>
                                 </div>
                             </div>
+                            <div class="sheet-copied-alert">Link copied!</div>
                         </div>
                     </div>
-
-                    <!-- Completed State actions -->
-                    <div id="success-actions" class="success-actions hidden">
-                        <div class="success-header">
-                            <div class="success-icon-wrapper">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <polyline points="22 4 12 14.01 9 11.01"/>
-                                </svg>
-                            </div>
-                            <h3>Download Started!</h3>
-                        </div>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); text-align: center; margin-top: -4px; max-width: 320px; line-height: 1.5;">
-                            Your video is downloading. Check your device downloads folder.
-                        </p>
-                        <a id="download-again-btn" href="" class="btn secondary-btn" style="margin-top: 8px; gap: 8px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                            </svg>
-                            <span>Download Again</span>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- Library/History Section -->
-                <section class="library-section card glassmorphic" aria-labelledby="history-title" style="margin-top: 24px;">
-                    <div class="library-header">
-                        <h2 id="history-title">Download History</h2>
-                        <span id="history-count" class="badge">0</span>
-                    </div>
-                    <div id="history-list" class="history-list">
-                        <!-- Placeholder when empty -->
-                        <div id="history-empty" class="history-empty">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <rect x="2" y="2" width="20" height="20" rx="6" stroke-dasharray="4 4"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                            <p>Your downloaded files will appear here</p>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </div>
-
-            <!-- Tab 2: How It Works & Features -->
-            <div id="guide-tab" class="tab-panel hidden">
-                <!-- How to Use Section -->
-                <section class="card glassmorphic" aria-labelledby="guide-title" style="margin-bottom: 24px;">
-                    <h3 id="guide-title" class="card-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                        How to Use SnapStream
-                    </h3>
-                    <div class="guide-steps">
-                        <div class="guide-step">
-                            <span class="step-num">1</span>
-                            <div class="step-content">
-                                <h4>Copy the Link</h4>
-                                <p>Go to Instagram or other video platforms, find the clip you want to save, and copy the link from the menu or address bar.</p>
-                            </div>
-                        </div>
-                        <div class="guide-step">
-                            <span class="step-num">2</span>
-                            <div class="step-content">
-                                <h4>Paste It Here</h4>
-                                <p>Paste the copied link in the text box. SnapStream will automatically check the link and display the details.</p>
-                            </div>
-                        </div>
-                        <div class="guide-step">
-                            <span class="step-num">3</span>
-                            <div class="step-content">
-                                <h4>Save to Device</h4>
-                                <p>Click "Download Now". The download starts instantly in your browser, saving the video directly to your device.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Features Section -->
-                <section class="card glassmorphic" aria-labelledby="features-title">
-                    <h3 id="features-title" class="card-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                        App Highlights
-                    </h3>
-                    <div class="features-grid">
-                        <div class="feature-box">
-                            <div class="feature-icon-wrapper">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                                </svg>
-                            </div>
-                            <h4>Fast Downloads</h4>
-                            <p>Downloads are processed in memory for immediate saving to your device without long wait times.</p>
-                        </div>
-                        <div class="feature-box">
-                            <div class="feature-icon-wrapper">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                </svg>
-                            </div>
-                            <h4>No Server Storage</h4>
-                            <p>Downloaded videos are never cached or saved on the server. Your downloads remain private.</p>
-                        </div>
-                        <div class="feature-box">
-                            <div class="feature-icon-wrapper">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="M8 12h8"/>
-                                </svg>
-                            </div>
-                            <h4>Privacy Protection</h4>
-                            <p>We do not collect personal data, IP addresses, or download logs. Your history is stored on your device only.</p>
-                        </div>
-                        <div class="feature-box">
-                            <div class="feature-icon-wrapper">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                                </svg>
-                            </div>
-                            <h4>Audio Included</h4>
-                            <p>Gets the complete, pre-merged MP4 format, ensuring your video has high-quality audio track.</p>
-                        </div>
-                    </div>
-                </section>
+        </div>
+        
+        <!-- Step 2 Card -->
+        <div class="step-card reverse">
+            <div class="step-info">
+                <h3 class="step-card-title">Step 2 — Paste the Link</h3>
+                <ol class="step-ordered-list">
+                    <li>
+                        <span class="step-num">1</span>
+                        <span class="step-text">Come back to VidsDownloader</span>
+                    </li>
+                    <li>
+                        <span class="step-num">2</span>
+                        <span class="step-text">Tap the input box and paste your link using the Paste button or Ctrl+V</span>
+                    </li>
+                    <li>
+                        <span class="step-num">3</span>
+                        <span class="step-text">Make sure the full Instagram video URL is in the field</span>
+                    </li>
+                </ol>
             </div>
-
-            <!-- Tab 3: Privacy & FAQ Accordion -->
-            <div id="privacy-tab" class="tab-panel hidden">
-                <section class="card glassmorphic" aria-labelledby="privacy-title">
-                    <h3 id="privacy-title" class="card-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                        Privacy Policy & FAQ
-                    </h3>
-                    <div class="accordion-group">
-                        <div class="accordion-item">
-                            <button class="accordion-header">
-                                <span>Are downloaded videos saved on your server?</span>
-                                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"/>
-                                </svg>
-                            </button>
-                            <div class="accordion-content">
-                                <div class="accordion-inner">
-                                    <p>No. Videos are streamed directly in memory from their source CDN to your web browser. Nothing is saved or stored on our server's hard drive.</p>
-                                </div>
-                            </div>
+            <div class="step-visual">
+                <div class="phone-frame">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen downloader-screen">
+                        <div class="site-header">
+                            <img src="/static/icon1.png" alt="Logo" class="site-logo">
+                            <span class="site-name">VidsDownloader</span>
                         </div>
-                        <div class="accordion-item">
-                            <button class="accordion-header">
-                                <span>Is my download history private?</span>
-                                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"/>
-                                </svg>
-                            </button>
-                            <div class="accordion-content">
-                                <div class="accordion-inner">
-                                    <p>Yes. We do not save or log your IP address, filenames, or links. Your history log is stored locally in your own browser's session history file for convenience.</p>
-                                </div>
+                        <div class="site-body">
+                            <div class="site-h1">Instagram Downloader</div>
+                            <div class="site-input-box">
+                                <div class="site-input-text">https://instagram.com/reel/...</div>
+                                <div class="site-paste-btn">Paste</div>
                             </div>
-                        </div>
-                        <div class="accordion-item">
-                            <button class="accordion-header">
-                                <span>Can I share the downloaded videos?</span>
-                                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="6 9 12 15 18 9"/>
-                                </svg>
-                            </button>
-                            <div class="accordion-content">
-                                <div class="accordion-inner">
-                                    <p>Downloaded videos are intended for personal use only. Please respect the copyright of the creators. Do not post, distribute, or share their work without permission.</p>
-                                </div>
-                            </div>
+                            <div class="site-cursor"></div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
-            
+        </div>
+        
+        <!-- Step 3 Card -->
+        <div class="step-card">
+            <div class="step-info">
+                <h3 class="step-card-title">Step 3 — Save the Video</h3>
+                <ol class="step-ordered-list">
+                    <li>
+                        <span class="step-num">1</span>
+                        <span class="step-text">Wait just a moment for automatic fetching</span>
+                    </li>
+                    <li>
+                        <span class="step-num">2</span>
+                        <span class="step-text">A thumbnail preview appears with creator username and details</span>
+                    </li>
+                    <li>
+                        <span class="step-num">3</span>
+                        <span class="step-text">Choose Download HD and the MP4 saves directly to your device</span>
+                    </li>
+                </ol>
+            </div>
+            <div class="step-visual">
+                <div class="phone-frame">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen success-screen">
+                        <div class="site-header">
+                            <img src="/static/icon1.png" alt="Logo" class="site-logo">
+                            <span class="site-name">VidsDownloader</span>
+                        </div>
+                        <div class="site-body">
+                            <div class="site-preview-card">
+                                <div class="site-preview-thumb"></div>
+                                <div class="site-preview-meta">@creator_profile</div>
+                            </div>
+                            <div class="site-download-btn">📥 DOWNLOAD HD</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- iPhone Guide Section -->
+<section id="iphone-guide" class="iphone-guide-section">
+    <h2 class="section-title-pink">How to Save Instagram Videos on iPhone (to Camera Roll)</h2>
+    <p class="section-subtitle">Save your Instagram videos directly to your iPhone camera roll — in seconds, with no app needed.</p>
+    
+    <div class="guide-content">
+        <div class="guide-block">
+            <h4>iPhone Steps — Safari Browser</h4>
+            <p>Open <strong>Safari</strong> on your iPhone and go to <strong>VidsDownloader</strong>. Open Instagram, find the video, tap the three-dot menu and tap <strong>Copy Link</strong>. Return to VidsDownloader, paste the link and it will automatically query. When the video details appear, tap <strong>Download Video</strong>. The video saves to your Files app. To move it to your camera roll, open <strong>Files</strong>, press and hold the video file, then tap <strong>Share</strong> and select <strong>Save Video</strong> — it appears in Photos under Recents instantly.</p>
+        </div>
+        
+        <div class="guide-block">
+            <h4>Using Chrome on iPhone</h4>
+            <p>Chrome on iPhone works identically — open <strong>VidsDownloader</strong>, paste your Instagram video link, let it fetch and tap Download. The file saves to your Files app Downloads folder. From there, press and hold the file and tap <strong>Share</strong> -> <strong>Save Video</strong> to add it to your iPhone camera roll.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Android Guide Section -->
+<section id="android-guide" class="iphone-guide-section" style="margin-top: 30px;">
+    <h2 class="section-title-pink">How to Save Instagram Videos on Android</h2>
+    <p class="section-subtitle">Download your favorite Instagram Reels directly to your Android gallery or storage in just a few taps.</p>
+    
+    <div class="guide-content">
+        <div class="guide-block" style="border-left-color: #833ab4;">
+            <h4>Android Steps — Chrome or Default Browser</h4>
+            <p>Open <strong>Chrome</strong> (or your default Android browser) and go to <strong>VidsDownloader</strong>. Open Instagram, locate the Reel you want to download, tap the <strong>Share</strong> icon and select <strong>Copy Link</strong>. Go back to VidsDownloader, paste the copied link, and let it fetch the Reel. Once the details appear, tap the green <strong>Download HD</strong> button. The video will be saved directly into your device's <strong>Downloads</strong> folder, accessible instantly via your Gallery or File Manager.</p>
+        </div>
+        
+        <div class="guide-block" style="border-left-color: #f77737;">
+            <h4>Managing Saved Files on Android</h4>
+            <p>To view your downloaded Reel, open any File Manager (such as <strong>Files by Google</strong> or <strong>My Files</strong>) and navigate to the <strong>Downloads</strong> directory. You can also view it inside your phone's default <strong>Gallery</strong> or <strong>Google Photos</strong> app under the 'Downloads' album, ready for offline sharing and playback.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion -->
+<section class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="accordion-group">
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Is VidsDownloader free to use?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Yes. Our downloader is a free web-based utility. There are no fees or subscriptions required to fetch and download public Reels.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Do I need to log in to Instagram?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>No. You do not need to log in to your Instagram account or provide us with your login details. The tool is independent and processes public URLs without credentials.</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p class="footer-disclosure">snapstream is not connected to Instagram™ or any other social platforms. We do not host or store files on our servers; all content belongs to its original owners.</p>
-            <p class="footer-disclosure">Please do not use our tool for copyrighted or restricted content. We comply with DMCA policies and respond to all valid infringement notices.</p>
-            <p class="footer-copyright">&copy; 2026 snapstream - All Rights Reserved.</p>
-        </footer>
-    </div>
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Can I download private Instagram Reels?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>No. VidsDownloader only supports downloading public Reels and videos that are accessible without logging in. We respect user privacy constraints and do not bypass account restrictions.</p>
+                </div>
+            </div>
+        </div>
 
-    <!-- Toasts area -->
-    <div id="toast-container" class="toast-container"></div>
-    <script src="/static/app.js"></script>
-</body>
-</html>
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Can I download Instagram Reels on iPhone?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Yes. You can use Safari or another iOS browser to visit VidsDownloader, fetch the video, and save it. It will be stored in your browser's default downloads location on your iPhone.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Can I download Instagram Reels on Android?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Yes. Our site is fully compatible with Android mobile browsers such as Chrome, Firefox, and Opera. Saved files are stored in your device downloads folder.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Do I need to install an app?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>No. VidsDownloader is a 100% web-based service. It runs in Chrome, Safari, Firefox, Edge, or any other browser, requiring zero software downloads or installations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Why is my Instagram Reel link not working?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>There are a few common reasons: the link might be from a private Instagram account, the video may have been deleted, the link format might be incorrect, or the Instagram server could be temporarily blocking access. Make sure the URL is public and copied correctly.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Where is my downloaded Reel saved?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Downloaded files are handled by your browser. By default, they go to your device's system "Downloads" folder, but you can change this default path in your browser settings.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Does VidsDownloader support public Reel links?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Yes. Any public link in the format of a Reel, Post video, or standard public Instagram share URL can be analyzed and fetched by our system.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                <span>Can I use downloaded Reels anywhere?</span>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-content">
+                <div class="accordion-inner">
+                    <p>Downloaded content belongs to the original creator. We advise using downloaded videos for personal, offline viewing only. You should obtain permission from the content owner before sharing or republishing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Responsible Use Banner -->
+<section class="content-section responsible-use">
+    <h3>Responsible Use Notice</h3>
+    <p>VidsDownloader is an independent online tool. Users are responsible for ensuring they have the right or permission to download and use content. Respect creators, copyright, privacy, and applicable platform terms.</p>
+</section>
+{% endblock %}

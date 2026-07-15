@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy | VidsDownloader{% endblock %}
+{% block description %}Read VidsDownloader's privacy policy. Learn about local storage for download history, web security, and cookie settings.{% endblock %}
+{% block canonical %}https://vidsdownloader.in/privacy{% endblock %}
+
+{% block content %}
+<section class="content-section legal-page">
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last Updated: July 2026</p>
+    
+    <p>
+        At VidsDownloader, accessible from <code>https://vidsdownloader.in/</code>, we value the privacy of our visitors. This Privacy Policy document outline the types of information we collect, how it is processed, and the measures we take to protect your data.
+    </p>
+
+    <h2>1. General Information Processing</h2>
+    <p>
+        VidsDownloader is a free online tool that enables users to query and download public video content. We do not require users to create accounts, provide email addresses, or input credentials.
+    </p>
+
+    <h2>2. Downloader Mechanics & In-Memory Routing</h2>
+    <p>
+        When you submit a supported public Instagram Reel link:
+    </p>
+    <ul class="content-list">
+        <li>The request is processed in real-time by our server-side scripts.</li>
+        <li>We fetch the video stream location from the source CDN.</li>
+        <li>The video is streamed directly through the server's memory to your browser.</li>
+        <li><strong>We do not save, cache, or store downloaded video files on our server disks.</strong> Once the browser completes the stream download, no traces of the video file remain on our server.</li>
+    </ul>
+
+    <h2>3. Download History (Local Storage)</h2>
+    <p>
+        VidsDownloader features a "Your Downloads" history section. This list is generated and stored <strong>entirely inside your own web browser</strong> using the standard <code>localStorage</code> API. 
+    </p>
+    <p>
+        None of your download history data is sent to our servers, sold, or shared with third parties. You can clear this history at any time by clearing your browser's site data, cache, or cookies.
+    </p>
+
+    <h2>4. Log Files and Telemetry</h2>
+    <p>
+        VidsDownloader follows a standard procedure of utilizing log files and basic analytics telemetry. The information tracked includes:
+    </p>
+    <ul class="content-list">
+        <li>Masked IP hashes (hashes are generated and stored anonymously for unique visitor counting).</li>
+        <li>Browser type (Chrome, Safari, Firefox, etc.) and Operating System platform.</li>
+        <li>Date and time stamps of site page views and API requests.</li>
+    </ul>
+    <p>
+        These logs are collected for the sole purpose of analyzing site traffic, identifying technical problems, preventing DDoS attacks or API abuse, and optimizing server load performance. They are not linked to any personally identifiable information.
+    </p>
+
+    <h2>5. Third-Party Services and Advertising</h2>
+    <p>
+        We may work with third-party service providers, such as web hosting companies and analytics tools. These services may collect technical request logs automatically. We do not use persistent user cookies to target advertisements or track user behavior across other websites.
+    </p>
+
+    <h2>6. Consent</h2>
+    <p>
+        By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+    </p>
+</section>
+{% endblock %}

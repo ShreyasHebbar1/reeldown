@@ -1,0 +1,130 @@
+<!-- Vibrant Hero Downloader Container -->
+<div class="hero-container">
+    <!-- Dotted Grid Pattern Overlay -->
+    <div class="hero-grid-overlay"></div>
+    
+    <!-- Hero Inner Content (Centered Layout) -->
+    <div class="hero-content-wrapper">
+
+        <!-- Title & Subtitle -->
+        <h1 id="dynamic-hero-title">{{ hero_title or "Free Instagram Reels Downloader" }}</h1>
+        <p id="dynamic-hero-subtitle">{{ hero_subtitle or "Download public Instagram Reels online in HD quality. Paste a Reel link and save the video quickly without installing an app." }}</p>
+
+        <!-- Downloader Form Container -->
+        <div class="search-form-card">
+            <!-- URL input row -->
+            <div class="search-input-wrapper">
+                <input type="url" id="reel-url" placeholder="{{ placeholder_text or 'Paste Instagram Reel link here...' }}" required autocomplete="off" inputmode="url">
+                <button type="button" id="clear-btn" class="search-clear-btn hidden" title="Clear input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+                <button type="button" id="paste-btn" class="search-paste-btn" title="Paste link from clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                        <rect x="8" y="2" width="8" height="4" rx="1" fill="currentColor"/>
+                    </svg>
+                    <span>Paste</span>
+                </button>
+            </div>
+
+
+
+            <!-- Fair Use policy notice -->
+            <p class="fair-use-link">By downloading, you agree to our <a href="/terms">Fair Use Policy</a>.</p>
+        </div>
+
+        <!-- Trust Signals Row -->
+        <div class="hero-trust-row">
+            <div class="trust-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="trust-output-type">{{ trust_output_type or "MP4 Video Output" }}</span>
+            </div>
+            <div class="trust-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>No Login Required</span>
+            </div>
+            <div class="trust-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>All Devices</span>
+            </div>
+            <div class="trust-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>100% Free</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Inner Container (For previews, history, and SEO sections below the fold) -->
+<div class="container-inner">
+    <!-- Beautiful Pulsing Skeleton Loading Card -->
+    <div id="fetching-loader" class="preview-area hidden">
+        <div class="preview-card skeleton-pulse">
+            <div class="thumbnail-wrapper skeleton-thumb"></div>
+            <div class="preview-details skeleton-details" style="display: flex; flex-direction: column; gap: 12px; flex-grow: 1;">
+                <div class="creator-badge skeleton-badge"></div>
+                <div class="skeleton-line title-line"></div>
+                <div class="skeleton-line title-line-short"></div>
+                <div class="preview-actions">
+                    <div class="skeleton-btn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Area (Dynamic, outside gradient area but centered) -->
+    <div id="preview-area" class="preview-area hidden">
+        <div class="preview-card">
+            <div class="thumbnail-wrapper">
+                <img id="preview-thumb" src="" alt="Video Thumbnail">
+                <span id="preview-duration" class="duration-tag">0:00</span>
+            </div>
+            <div class="preview-details">
+                <div class="creator-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span id="preview-creator">@username</span>
+                </div>
+                <p id="preview-title" class="preview-title">Video Description</p>
+                <div class="preview-actions">
+                    <button type="button" id="download-btn" class="btn primary-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Download Video</span>
+                    </button>
+                    <button type="button" id="cancel-preview-btn" class="btn text-btn">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed State Actions -->
+    <div id="success-actions" class="success-actions hidden">
+        <div class="success-header">
+            <div class="success-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <h3>Download Started!</h3>
+        </div>
+        <p class="success-subtext">
+            Your download is processing. If it doesn't start automatically, click below to save:
+        </p>
+        <a id="download-again-btn" href="" class="btn secondary-btn" style="margin-top: 8px; gap: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Download Again</span>
+        </a>
+    </div>
+

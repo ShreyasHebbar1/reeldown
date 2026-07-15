@@ -2,8 +2,45 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://vidsdownloader.in/</loc>
-        <lastmod>2026-07-08</lastmod>
+        <lastmod>2026-07-14</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
+    </url>
+
+    <url>
+        <loc>https://vidsdownloader.in/download-instagram-reels</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://vidsdownloader.in/instagram-reels-downloader-iphone</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://vidsdownloader.in/instagram-reels-downloader-android</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://vidsdownloader.in/privacy</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://vidsdownloader.in/terms</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://vidsdownloader.in/contact</loc>
+        <lastmod>2026-07-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
     </url>
 </urlset>
