@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
+    const downloaderForm = document.getElementById('downloader-form');
     const reelUrlInput = document.getElementById('reel-url');
     const pasteBtn = document.getElementById('paste-btn');
     const clearBtn = document.getElementById('clear-btn');
@@ -134,6 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Wire up Auto-Fetching Input Listeners ---
     if (reelUrlInput) {
+        // Form submit handler
+        if (downloaderForm) {
+            downloaderForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const url = reelUrlInput.value.trim();
+                if (isValidInstagramUrl(url)) {
+                    fetchReelMetadata(url);
+                } else if (url.length > 0) {
+                    showToast('Please enter a valid Instagram Reel link.', 'error');
+                }
+            });
+        }
+
         // Monitor manual typing or text change
         reelUrlInput.addEventListener('input', () => {
             const url = reelUrlInput.value.trim();
@@ -234,45 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Smooth Scrolling for SEO Links on Homepage ---
-    const isHomepage = window.location.pathname === '/' || window.location.pathname === '/instagram-reels-downloader';
-    
+    // --- Smooth Scrolling for Local Anchor Links ---
     document.querySelectorAll('a').forEach(link => {
         const href = link.getAttribute('href');
         if (!href) return;
 
-        if (isHomepage) {
-            if (href === '/download-instagram-reels' || href.includes('#how-it-works')) {
+        if (href.startsWith('#') || href.includes('#')) {
+            const parts = href.split('#');
+            const targetId = parts[1];
+            if (!targetId) return;
+            
+            // Only handle smooth scroll if we are on the page containing that element
+            const isLocalPage = parts[0] === '' || window.location.pathname === parts[0] || (window.location.pathname === '/' && parts[0] === '');
+            
+            if (isLocalPage) {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetEl = document.getElementById('how-it-works');
+                    const targetEl = document.getElementById(targetId);
                     if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            } else if (href === '/instagram-reels-downloader-iphone' || href.includes('#iphone-guide')) {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetEl = document.getElementById('iphone-guide');
-                    if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            } else if (href === '/instagram-reels-downloader-android' || href.includes('#android-guide')) {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetEl = document.getElementById('android-guide');
-                    if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            } else if (href === '/instagram-reels-downloader' || href === '/') {
-                if (link.classList.contains('nav-link') || link.classList.contains('logo-link')) {
-                    link.addEventListener('click', (e) => {
                         e.preventDefault();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                }
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
             }
         }
     });

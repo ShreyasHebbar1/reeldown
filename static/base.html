@@ -72,19 +72,17 @@
     <header class="app-header">
         <div class="header-inner">
             <div class="logo-area">
-                <a href="/" class="logo-link">
+                <a href="/" class="logo-link" aria-label="VidsDownloader Homepage">
                     <div class="logo-icon-circle" style="background: transparent; box-shadow: none;">
-                        <img src="/static/icon3.png" alt="VidsDownloader Logo" style="width: 32px; height: 32px; object-fit: contain;">
+                        <img src="/static/icon3.png" alt="VidsDownloader Logo" width="32" height="32" style="object-fit: contain;">
                     </div>
                     <span class="logo-text">Vids<span>Downloader</span></span>
                 </a>
             </div>
             
-
-
             <div class="header-right">
-                <div class="lang-selector-pill">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="lang-selector-pill" role="button" aria-haspopup="listbox" aria-label="Select Language" tabindex="0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"/>
                         <line x1="2" y1="12" x2="22" y2="12"/>
                         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -105,9 +103,9 @@
         <div class="footer-inner">
             <div class="footer-links">
                 <div class="footer-col brand-col" style="grid-column: span 1; min-width: 200px;">
-                    <a href="/" class="logo-link" style="margin-bottom: 8px;">
+                    <a href="/" class="logo-link" style="margin-bottom: 8px;" aria-label="VidsDownloader Homepage">
                         <div class="logo-icon-circle" style="background: transparent; box-shadow: none; width: 32px; height: 32px; flex-shrink: 0;">
-                            <img src="/static/icon1.png" alt="VidsDownloader Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="/static/icon1.png" alt="VidsDownloader Footer Logo" width="32" height="32" style="object-fit: contain;">
                         </div>
                         <span class="logo-text" style="color: #ffffff; font-size: 1.25rem;">Vids<span style="color: #e1306c;">Downloader</span></span>
                     </a>
@@ -115,22 +113,28 @@
                         Free Instagram downloader for Reels — no login, no watermark.
                     </p>
                 </div>
-                <div class="footer-col">
+                <nav class="footer-col" aria-label="Downloader Options">
                     <h4>Downloader Options</h4>
-                    <a href="/">Instagram Reels Downloader</a>
-                </div>
-                <div class="footer-col">
+                    <ul>
+                        <li><a href="/">Instagram Reels Downloader</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-col" aria-label="How-To Guides">
                     <h4>How-To Guides</h4>
-                    <a href="/download-instagram-reels">How to Download Reels</a>
-                    <a href="/instagram-reels-downloader-iphone">Download on iPhone</a>
-                    <a href="/instagram-reels-downloader-android">Download on Android</a>
-                </div>
-                <div class="footer-col">
+                    <ul>
+                        <li><a href="/download-instagram-reels">How to Download Reels</a></li>
+                        <li><a href="/instagram-reels-downloader-iphone">Download on iPhone</a></li>
+                        <li><a href="/instagram-reels-downloader-android">Download on Android</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-col" aria-label="Legal & Support">
                     <h4>Legal & Support</h4>
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Use</a>
-                    <a href="/contact">Contact Support</a>
-                </div>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Use</a></li>
+                        <li><a href="/contact">Contact Support</a></li>
+                    </ul>
+                </nav>
             </div>
             <div class="footer-disclaimers">
                 <p class="footer-disclosure">VidsDownloader is an independent online web tool. We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Instagram, Meta Platforms, Inc., or any of its subsidiaries or affiliates. All product names, logos, brands, trademarks and registered trademarks are property of their respective owners.</p>

@@ -13,24 +13,22 @@
         <!-- Downloader Form Container -->
         <div class="search-form-card">
             <!-- URL input row -->
-            <div class="search-input-wrapper">
-                <input type="url" id="reel-url" placeholder="{{ placeholder_text or 'Paste Instagram Reel link here...' }}" required autocomplete="off" inputmode="url">
-                <button type="button" id="clear-btn" class="search-clear-btn hidden" title="Clear input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <form id="downloader-form" class="search-input-wrapper" action="#" method="POST" novalidate>
+                <input type="url" id="reel-url" placeholder="{{ placeholder_text or 'Paste Instagram Reel link here...' }}" required autocomplete="off" inputmode="url" aria-label="Instagram Reel Link">
+                <button type="button" id="clear-btn" class="search-clear-btn hidden" title="Clear input" aria-label="Clear input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                         <line x1="18" y1="6" x2="6" y2="18"/>
                         <line x1="6" y1="6" x2="18" y2="18"/>
                     </svg>
                 </button>
-                <button type="button" id="paste-btn" class="search-paste-btn" title="Paste link from clipboard">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button type="button" id="paste-btn" class="search-paste-btn" title="Paste link from clipboard" aria-label="Paste link from clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
                         <rect x="8" y="2" width="8" height="4" rx="1" fill="currentColor"/>
                     </svg>
                     <span>Paste</span>
                 </button>
-            </div>
-
-
+            </form>
 
             <!-- Fair Use policy notice -->
             <p class="fair-use-link">By downloading, you agree to our <a href="/terms">Fair Use Policy</a>.</p>
